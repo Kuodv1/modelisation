@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import modelisation.graphique.barreLaterale.VueBarreLaterale;
 import modelisation.graphique.menubarre.VueMenuBarre;
+import modelisation.graphique.vueImage.AffichageCentrale;
 import modelisation.graphique.vueImage.VueImage;
 
 public class Modelisation extends JFrame{
@@ -19,11 +20,11 @@ public class Modelisation extends JFrame{
         Modele m = new Modele();
         VueMenuBarre vmb = new VueMenuBarre(m);
         VueBarreLaterale vbl = new VueBarreLaterale(m);
-        VueImage vi = new VueImage(m);
+        AffichageCentrale ac = new AffichageCentrale(m);
         m.addObserver(vbl);
         add(vmb, BorderLayout.NORTH);
         add(vbl, BorderLayout.EAST);
-        add(vi, BorderLayout.CENTER);
+        add(ac, BorderLayout.CENTER);
         pack() ;
         setVisible(true);
 	}

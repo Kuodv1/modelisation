@@ -9,11 +9,8 @@ import java.awt.Graphics2D;
 import java.util.Observable;
 import java.util.Observer;
 
-import java.awt.image.*;
-import java.io.IOException;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import modelisation.controleur.vueImage.EcouteurSelection;
 import modelisation.modele.Modele;
@@ -37,12 +34,14 @@ public class VueImage extends JPanel implements Observer {
 	    public void paintComponent(Graphics g){
 	        super.paintComponent(g);
 	        Graphics2D g2 = (Graphics2D) g;
+			if(affi!=null)this.setSize(new Dimension(affi.getLargeur(),affi.getHauteur()));
 	        int w = getWidth() ;
 	        int h = getHeight() ;
 	        GradientPaint gp = new GradientPaint(-w, -h, Color.LIGHT_GRAY, w, h, Color.WHITE, false);
 	        g2.setPaint(gp);
 	        g2.fillRect(0, 0, w, h);
-	        if(affi!=null) g.drawImage(affi.getImage(), (this.getWidth()-affi.getLargeur())/2, (this.getHeight()-affi.getHauteur())/2, this);             
+	        if(affi!=null) g.drawImage(affi.getImage(), 0,0, this);
+	        ((AffichageCentrale) this.getParent()).changement();
 	      }            
 	    
 		@Override
