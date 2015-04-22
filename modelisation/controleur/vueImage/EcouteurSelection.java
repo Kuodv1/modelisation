@@ -31,7 +31,7 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 			isClick = false;
 			if(boutonChoisi == ButtonLeft) System.out.println("Relachement BoutonGauche");
 			else System.out.println("Relachement BoutonDroit");
-			m.recap();
+			//m.recap();
 		}
 		
 	}
@@ -39,14 +39,11 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		surImage = true;
-		System.out.println("sur image");
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		surImage = false;
-		System.out.println("pas sur image");
-		
+		surImage = false;		
 	}
 
 	@Override

@@ -12,8 +12,7 @@ public class Modele extends Observable {
 	protected String lienImg;
 	int [][] img;
 	int [][] interest;
-	boolean [][] conserver;
-	boolean [][] supprimer;
+	int[][] conservSuppr;
 	Graph g;
 	int choix;
 	
@@ -56,8 +55,7 @@ public class Modele extends Observable {
 		 img = sc.readpgm(filePath);
 		 lienImg = filePath;
 		 
-		 conserver = new boolean[img.length][img[0].length];
-		 supprimer = new boolean[img.length][img[0].length];
+		 conservSuppr = new int[img.length][img[0].length];
 		 
 		 //generationGraph();
 		 System.out.println("Image chargé. Réduction possible.");
@@ -69,8 +67,7 @@ public class Modele extends Observable {
 		lienImg = filePath;
 		 System.out.println("Image chargé. Réduction possible.");
 		 
-		 conserver = new boolean[img.length][img[0].length];
-		 supprimer = new boolean[img.length][img[0].length];
+		 conservSuppr = new int[img.length][img[0].length];
 		 update();
 	}
 	
@@ -252,12 +249,8 @@ public class Modele extends Observable {
 		return img;
 	}
 	
-	public boolean[][] getConserver() {
-		return conserver;
-	}
-	
-	public boolean[][] getSupprimer() {
-		return supprimer;
+	public int[][] getConserverSupprimer() {
+		return conservSuppr;
 	}
 	
 	public void setAction(int choix) {
@@ -267,29 +260,26 @@ public class Modele extends Observable {
 	
 	public void zoneSelectionne(int x, int y, boolean chgt) {
 		if(choix == 1) {
-			conserver[y][x] = chgt;
+			if(chgt) conservSuppr[y][x] = 1;
+			else conservSuppr[y][x] = 0;
 		} else if(choix == 2) {
-			supprimer[y][x] = chgt;
+			if(chgt) conservSuppr[y][x] = -1;
+			else conservSuppr[y][x] = 0;
 		}
 	}
 	
 	public void recap() {
-		StringBuilder sConserve = new StringBuilder("Conserver\n");
-		StringBuilder sSupprimer = new StringBuilder("Supprimer\n");
-		int conse = 0;
+		int cons =0;
 		int suppr = 0;
-		for(int x = 0; x<conserver.length;x++) {
-			for(int y = 0; y<conserver[x].length;y++) {
-				//sConserve.append("|"+conserver[x][y]);
-				if(conserver[x][y]) conse++;
-				//sSupprimer.append("|"+supprimer[x][y]);
-				if(supprimer[x][y]) suppr++;
+		for(int i = 0; i<conservSuppr.length;i++) {
+			for(int j = 0; j<conservSuppr[0].length;j++) {
+				if(conservSuppr[i][j]!=0) {
+					if(conservSuppr[i][j]==1) cons++;
+					else suppr++;
+				}
 			}
-			//sConserve.append("|\n");
-			//sSupprimer.append("|\n");
 		}
-		System.out.println(conse+ "\n"+sConserve.toString());
-		System.out.println(suppr+"\n"+sSupprimer.toString());
+		System.out.println("conserv : "+cons+" - suppr : "+suppr);
 	}
 	
 	/**

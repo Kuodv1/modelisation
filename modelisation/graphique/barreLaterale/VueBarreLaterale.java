@@ -18,6 +18,9 @@ public class VueBarreLaterale extends JPanel implements Observer{
 
 	protected Modele m;
 	protected JButton reduce;
+	protected JButton stop;
+	protected JButton conserv;
+	protected JButton suppr;
 	protected GridLayout grid;
 	
 	public VueBarreLaterale(Modele m) {
@@ -33,19 +36,21 @@ public class VueBarreLaterale extends JPanel implements Observer{
 		reduce = new JButton("Réduire");
 		reduce.addActionListener(new EcouteurReduire(m));
 		reduce.setEnabled(false);
-		
 		this.add(reduce);
 		
-		JButton conserv = new JButton("Conserver");
+		conserv = new JButton("Conserver");
 		conserv.addActionListener(new EcouteurPixel(m,1));
+		conserv.setEnabled(false);
 		this.add(conserv);
 		
-		JButton suppr = new JButton("Supprimer");
+		suppr = new JButton("Supprimer");
 		suppr.addActionListener(new EcouteurPixel(m,2));
+		suppr.setEnabled(false);
 		this.add(suppr);
 		
-		JButton stop = new JButton("Stop sélection");
+		stop = new JButton("Stop sélection");
 		stop.addActionListener(new EcouteurPixel(m,0));
+		stop.setEnabled(false);
 		this.add(stop);
 		
 
@@ -55,6 +60,9 @@ public class VueBarreLaterale extends JPanel implements Observer{
 	public void update(Observable arg0, Object arg1) {
 		if(!m.getLink().isEmpty()) {
 			reduce.setEnabled(true);
+			conserv.setEnabled(true);
+			suppr.setEnabled(true);
+			stop.setEnabled(true);
 		}
 		
 	}
