@@ -15,7 +15,6 @@ public class AffichageCentrale extends JPanel{
 		this.setPreferredSize(new Dimension(200,200));
 		vm = new VueImage(m);
 		this.add(vm,BorderLayout.CENTER);
-		//this.addComponentListener(new EcouteurResizeAffichageCentrale(this));
 	}
 	
 	public void changement() {
