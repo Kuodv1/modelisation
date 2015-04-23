@@ -4,7 +4,7 @@ class Edge
 {
    final int from;
    final int to;
-   final int capacity;
+   int capacity;
    int used;
    
    /**
@@ -54,6 +54,10 @@ class Edge
     */
    public void setUsed(int used) {
 	   this.used = used;
+   }
+   
+   public void setCapacity(int capacity) {
+	   this.capacity = capacity;
    }
    
    /**

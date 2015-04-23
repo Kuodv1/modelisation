@@ -147,6 +147,25 @@ public class Graph
 	   return i;
    }
    
+   
+   public void modifInteretSuppr(ArrayList<Integer> suppr) {
+	   for(int i = 0; i<suppr.size();i++) {
+		   for(Edge e : adj[suppr.get(i)]) {
+			   if(e.to == suppr.get(i) && e.from>suppr.get(i)) {
+				   e.setCapacity(0);
+			   }
+		   }
+	   }
+   }
+   
+   public void modifInteretConserv(ArrayList<Integer> conserv) {
+	   for(int i = 0; i<conserv.size();i++) {
+		   for(Edge e : adj[conserv.get(i)]) {
+			   e.setCapacity(-1);
+		   }
+	   }
+   }
+   
    /**
     * Retourne l'ar�te � l'aide des param�tres from et to
     * @param from
@@ -239,6 +258,7 @@ public class Graph
 				   if(!e.max() && !visit.containsKey(e.to) && check.to==e.from) {
 					   test.add(e);
 					   visit.put(e.to, e);
+					  // if(e.to == 5) {System.out.println(e.from+ " - "+e.used+" - "+e.capacity);}
 				   }
 			   }
 			   test.remove(0);

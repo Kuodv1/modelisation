@@ -19,6 +19,7 @@ public class VueImage extends JPanel implements Observer {
 
 	protected Modele m;
 	protected ImageCharge affi;
+	protected ImageCharge selection;
 	
 	    public VueImage(Modele m) {
 	    	super(new BorderLayout());
@@ -26,6 +27,7 @@ public class VueImage extends JPanel implements Observer {
 	    	this.m = m;
 	    	m.addObserver(this);
 	    	affi = null;
+	    	selection = null;
 	    	EcouteurSelection listener = new EcouteurSelection(m);
 	    	this.addMouseListener(listener);
 	    	this.addMouseMotionListener(listener);
@@ -41,6 +43,8 @@ public class VueImage extends JPanel implements Observer {
 	        g2.setPaint(gp);
 	        g2.fillRect(0, 0, w, h);
 	        if(affi!=null) g.drawImage(affi.getImage(), 0,0, this);
+	        if(selection!=null) selection.dessiner(m);
+	        g.drawImage(selection, 0, 0, this);
 	        ((AffichageCentrale) this.getParent()).changement();
 	      }            
 	    
@@ -51,9 +55,11 @@ public class VueImage extends JPanel implements Observer {
 				this.setSize(new Dimension(img[0].length,img.length));
 				if(m.getLink().endsWith(".ppm")) {
 					affi = new ImageChargePPM(img[0].length,img.length);
+					selection = new SelectionConserve(img[0].length,img.length);
 					affi.dessiner(m);
 				} else if(m.getLink().endsWith(".pgm")) {
 					affi = new ImageChargePGM(img[0].length,img.length);
+					selection = new SelectionConserve(img[0].length,img.length);
 					affi.dessiner(m);
 				}
 			}

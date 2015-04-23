@@ -1,10 +1,9 @@
 package modelisation.modele;
 
+import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
-
-import javax.swing.JOptionPane;
 
 public class Modele extends Observable {
 
@@ -12,9 +11,9 @@ public class Modele extends Observable {
 	protected String lienImg;
 	int [][] img;
 	int [][] interest;
-	int[][] conservSuppr;
+	Selection conservSuppr;
 	Graph g;
-	int choix;
+	int choix; //0 = pas de selection, 1 = conservation, 2 = supprimer
 	
 	/**
 	 * Constructeur de Modele
@@ -54,8 +53,8 @@ public class Modele extends Observable {
 	public void readPgm(String filePath) {
 		 img = sc.readpgm(filePath);
 		 lienImg = filePath;
-		 
-		 conservSuppr = new int[img.length][img[0].length];
+		
+		 conservSuppr = new Selection(img.length,img[0].length);
 		 
 		 //generationGraph();
 		 System.out.println("Image chargé. Réduction possible.");
@@ -67,7 +66,7 @@ public class Modele extends Observable {
 		lienImg = filePath;
 		 System.out.println("Image chargé. Réduction possible.");
 		 
-		 conservSuppr = new int[img.length][img[0].length];
+		 conservSuppr = new Selection(img.length,img[0].length);
 		 update();
 	}
 	
@@ -75,8 +74,12 @@ public class Modele extends Observable {
 	 * Conception du tableau des int�rets, g�n�ration du graphe du tableau des interets et �laboration du graphe r�siduel
 	 */
 	public void generationGraph() {
-		interest = interest(img);
+		ArrayList<Integer> suppr = new ArrayList<Integer>();
+		ArrayList<Integer> conserv = new ArrayList<Integer>();
+		interest = interest(img,suppr, conserv);
 		g = toGraph(interest);
+		if(suppr.size()>0) g.modifInteretSuppr(suppr);
+		if(conserv.size()>0) g.modifInteretConserv(conserv);
 		defaultFlot();
 		getGraphResidu();
 	}
@@ -86,7 +89,7 @@ public class Modele extends Observable {
 	 * @param image
 	 * @return
 	 */
-	   public int[][] interest(int[][] image)
+	   public int[][] interest(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv)
 	   {		   
 		 //initialisation tableau même taille
 		   int i,j;
@@ -97,16 +100,62 @@ public class Modele extends Observable {
 		   
 		   for(i=0;i<image.length;i++)
 		   {
-			   imageInt[i][0] = Math.abs((image[i][0]-image[i][1]));
-			   for(j=1;j<image[i].length-1;j++)
-			   {
-				   imageInt[i][j] = Math.abs(image[i][j]-(int)((image[i][j-1]+image[i][j+1])/2));
+			   imageInt[i][image[i].length-1] = 1 + Math.abs((image[i][image[i].length-2]-image[i][image[i].length-1]));
+			   if(conservSuppr.getValue(i,image[i].length-1)==-1) {
+				   suppr.add(((image[i].length-1)*img.length)+i+1);
+				   imageInt[i][image[i].length-1]=0;
+			   } else if(conservSuppr.getValue(i,image[i].length-1)==1) {
+				   conserv.add(((image[i].length-1)*img.length)+i+1);
 			   }
-			   imageInt[i][image[i].length-1] = Math.abs((image[i][image[i].length-2]-image[i][image[i].length-1]));
+			   for(j=image[i].length-2;j>0;j--)
+			   {
+				   imageInt[i][j] = 1+ Math.abs(image[i][j]-(int)((image[i][j-1]+image[i][j+1])/2));
+				   if(conservSuppr.getValue(i,j)==-1) {
+					   suppr.add((img.length*j)+i+1);
+					   imageInt[i][j] = 0;
+				   } else if(conservSuppr.getValue(i,j)==1) {
+					   conserv.add((img.length*j)+i+1);
+				   }
+			   }
+			   imageInt[i][0] = 1 + Math.abs((image[i][0]-image[i][1]));
+			   if(conservSuppr.getValue(i,0)==-1) {
+				   suppr.add(i+1);
+				   imageInt[i][0]=0;
+			   } else if (conservSuppr.getValue(i, 0)==1) {
+				   conserv.add(i+1);
+			   }
 		   }
+		   
 		   return imageInt;
 	   }
 	
+	   
+	   public void modifInt(int i, int j, int[][] imageInt) {
+		   if(conservSuppr.getValue(i,j)!=0) {
+			   if(conservSuppr.getValue(i, j)==1) { imageInt[i][j]= -1;}
+			   else if (conservSuppr.getValue(i, j)==-1){imageInt[i][j] = 0; makeDiag(i,j,imageInt);}
+			   else imageInt[i][j] = 0;
+		   }
+	   }
+	   
+	   public void makeDiag(int i, int j, int[][] imageInt) {
+		   int k = 1;
+		   
+		   while((j+k)<imageInt[i].length && (i+k)<imageInt.length) {
+			   
+			   imageInt[i+k][j+k] = imageInt[i][j];
+			   if(conservSuppr.getValue(i+k,j+k)!=1) conservSuppr.setValue(i+k, j+k, -2);
+			   k++;
+		   }
+		   
+		   k = 1;
+		   while((j+k)<imageInt[i].length && (i-k)>=0) {
+			   
+			   imageInt[i-k][j+k] = imageInt[i][j];
+			   k++;
+		   }
+	   }
+	   
 	@SuppressWarnings("static-access")
 	/**
 	 * Conception du graphe
@@ -140,7 +189,8 @@ public class Modele extends Observable {
 		System.out.println("Debut du traitement de reduction.");
 		if(reducLarge>0)reductionLargeur(reducLarge);
 		if(reducHaut>0) reductionHauteur(reducHaut);
-		
+		conservSuppr = new Selection(img.length, img[0].length);
+		update();
 		writeImage(img);
 	}
 	
@@ -184,6 +234,7 @@ public class Modele extends Observable {
 				sb.append("\n");
 			}
 			img = newImage;
+			conservSuppr.rotationGauche();
 		}
 	}
 	
@@ -199,6 +250,7 @@ public class Modele extends Observable {
 				sb.append("\n");
 			}
 			img = newImage;
+			conservSuppr.rotationDroite();
 		}
 	}
 	
@@ -208,13 +260,17 @@ public class Modele extends Observable {
 	 * @return
 	 */
 	public int[][] removeColonne(ArrayList<Integer> coupe) {
+		for(Integer i : coupe) {System.out.println(i);}
 		int [][] newImage = new int[img.length][img[0].length-1];
+		Selection newConservSuppr = new Selection(conservSuppr.getHauteur(),conservSuppr.getLargeur()-1);
 		for(int i=0;i<newImage.length-1;i++) {
 			for(int j = 0; j<newImage[i].length;j++) {
 				if((coupe.get(i)/coupe.size())>j) {
 					newImage[i][j]=img[i][j];
+					newConservSuppr.setValue(i, j, conservSuppr.getValue(i, j));
 				} else {
 					newImage[i][j]=img[i][j+1];
+					newConservSuppr.setValue(i, j, conservSuppr.getValue(i, j+1));
 				}
 			}
 		}
@@ -222,11 +278,13 @@ public class Modele extends Observable {
 		for(int j= 0; j<newImage[ligne].length;j++) {
 			if(coupe.get(coupe.size()-1)/coupe.size()-1>j){
 				newImage[ligne][j]=img[ligne][j];
+				newConservSuppr.setValue(ligne, j, conservSuppr.getValue(ligne, j));
 			} else {
 				newImage[ligne][j] = img[ligne][j+1];
+				newConservSuppr.setValue(ligne, j, conservSuppr.getValue(ligne, j+1));
 			}
 		}
-		
+		conservSuppr = newConservSuppr;
 		return newImage;
 	}
 	
@@ -250,7 +308,7 @@ public class Modele extends Observable {
 	}
 	
 	public int[][] getConserverSupprimer() {
-		return conservSuppr;
+		return conservSuppr.getSelect();
 	}
 	
 	public void setAction(int choix) {
@@ -258,17 +316,74 @@ public class Modele extends Observable {
 		System.out.println("Choix "+choix);
 	}
 	
-	public void zoneSelectionne(int x, int y, boolean chgt) {
+/*	public void zoneSelectionne(int x, int y, boolean chgt) {
 		if(choix == 1) {
-			if(chgt) conservSuppr[y][x] = 1;
+			if(chgt) conservSuppr.s[y][x] = 1;
 			else conservSuppr[y][x] = 0;
 		} else if(choix == 2) {
 			if(chgt) conservSuppr[y][x] = -1;
 			else conservSuppr[y][x] = 0;
 		}
+	}*/
+	
+	public void select(Point p1, Point p2){
+		if(choix!=0) {
+			Point pUn;
+			Point pDeux;
+			if(p1.getX()<p2.getX()) {
+				if(p1.getY()<p2.getY()) {
+					pUn = p1;
+					pDeux = p2;
+				} else {
+					pUn = new Point((int)p1.getX(),(int)p2.getY());
+					pDeux = new Point((int)p2.getX(),(int)p1.getY());
+				}
+			} else {
+				if(p1.getY()<p2.getY()) {
+					pUn = new Point((int)p2.getX(),(int)p1.getY());
+					pDeux = new Point((int)p1.getX(),(int)p2.getY());
+				}else {
+					pUn = p2;
+					pDeux = p1;
+				}
+			}
+			
+			int newValue = 0;
+			if(choix == 1) { // conserver
+				newValue = 1;
+			} else if (choix == 2) { // supprimer
+				newValue = -1;
+			}
+			
+			conservSuppr = new Selection(conservSuppr);
+			
+			for(int i = (int)pUn.getY();i<(int)pDeux.getY();i++) {
+				for(int j = (int)pUn.getX(); j<(int)pDeux.getX();j++) {
+					conservSuppr.setValue(i, j, newValue);
+				}
+			}
+			update();
+		}
 	}
 	
-	public void recap() {
+	public void supprimerSelection(int x, int y) {
+		if(conservSuppr.getValue(y, x)!=0) {
+			conservSuppr = new Selection(conservSuppr);
+			conservSuppr.supprimerSelection(x,y);
+			update();
+		}
+	}
+	
+	public void annulerSelection() {
+		conservSuppr = conservSuppr.getPere();
+		update();
+	}
+	
+	public boolean annulerSelectPossible() {
+		return conservSuppr.annulerSelectPossible();
+	}
+	
+	/*public void recap() {
 		int cons =0;
 		int suppr = 0;
 		for(int i = 0; i<conservSuppr.length;i++) {
@@ -281,7 +396,7 @@ public class Modele extends Observable {
 		}
 		System.out.println("conserv : "+cons+" - suppr : "+suppr);
 	}
-	
+	*/
 	/**
 	 * les observateurs du mod�le vont �tre pr�venus du changement
 	 */

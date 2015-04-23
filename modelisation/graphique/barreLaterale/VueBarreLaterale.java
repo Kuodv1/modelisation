@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import modelisation.controleur.barreLaterale.AnnulerSelection;
 import modelisation.controleur.barreLaterale.EcouteurChargerImage;
 import modelisation.controleur.barreLaterale.EcouteurPixel;
 import modelisation.controleur.barreLaterale.EcouteurReduire;
@@ -21,12 +22,13 @@ public class VueBarreLaterale extends JPanel implements Observer{
 	protected JButton stop;
 	protected JButton conserv;
 	protected JButton suppr;
+	protected JButton annuler;
 	protected GridLayout grid;
 	
 	public VueBarreLaterale(Modele m) {
 		super(new BorderLayout());
 		this.m = m;
-		grid = new GridLayout(5,1);
+		grid = new GridLayout(6,1);
 		this.setLayout(grid);
 		JButton loadImage = new JButton("Charger une image");
 		loadImage.addActionListener(new EcouteurChargerImage(m));
@@ -53,7 +55,10 @@ public class VueBarreLaterale extends JPanel implements Observer{
 		stop.setEnabled(false);
 		this.add(stop);
 		
-
+		annuler = new JButton("Annuler sélection");
+		annuler.addActionListener(new AnnulerSelection(m));
+		annuler.setEnabled(false);
+		this.add(annuler);
 	}
 
 	@Override
@@ -63,6 +68,7 @@ public class VueBarreLaterale extends JPanel implements Observer{
 			conserv.setEnabled(true);
 			suppr.setEnabled(true);
 			stop.setEnabled(true);
+			annuler.setEnabled(m.annulerSelectPossible());
 		}
 		
 	}

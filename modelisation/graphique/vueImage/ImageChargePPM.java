@@ -15,7 +15,10 @@ public class ImageChargePPM extends ImageCharge{
 	
 	
 	public void dessiner(Modele m) {
-		int[][] recup = m.getImage();
+		int[][] recup = new int[m.getImage().length][m.getImage()[0].length];
+		for(int i = 0; i<m.getImage().length;i++) {
+			recup[i] = (int[]) m.getImage()[i].clone();
+		}
 		int bleu = 0;
 		int rouge = 0;
 		int vert = 0;

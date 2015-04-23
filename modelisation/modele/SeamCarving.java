@@ -177,7 +177,6 @@ public class SeamCarving
 		   PrintWriter writer = null;
 		   try{
 			   int i,j,boucle;
-			   int retrait;
 			   boucle = 0;
 		        writer = new PrintWriter(filename);
 		        writer.println("P3");
