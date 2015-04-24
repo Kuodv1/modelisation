@@ -76,7 +76,8 @@ public class Modele extends Observable {
 	public void generationGraph() {
 		ArrayList<Integer> suppr = new ArrayList<Integer>();
 		ArrayList<Integer> conserv = new ArrayList<Integer>();
-		interest = interest(img,suppr, conserv);
+		if(lienImg.endsWith(".pgm")) interest = interest(img,suppr, conserv);
+		else if (lienImg.endsWith(".ppm")) interest = interestPPM(img,suppr,conserv);
 		g = toGraph(interest);
 		if(suppr.size()>0) g.modifInteretSuppr(suppr);
 		if(conserv.size()>0) g.modifInteretConserv(conserv);
@@ -93,10 +94,7 @@ public class Modele extends Observable {
 	   {		   
 		 //initialisation tableau même taille
 		   int i,j;
-		   int[][] imageInt = new int[image.length][];
-		   for(i = 0; i<image.length;i++) {
-			   imageInt[i] = new int[image[i].length];
-		   }
+		   int[][] imageInt = new int[image.length][image[0].length];
 		   
 		   for(i=0;i<image.length;i++)
 		   {
@@ -129,32 +127,67 @@ public class Modele extends Observable {
 		   return imageInt;
 	   }
 	
-	   
-	   public void modifInt(int i, int j, int[][] imageInt) {
-		   if(conservSuppr.getValue(i,j)!=0) {
-			   if(conservSuppr.getValue(i, j)==1) { imageInt[i][j]= -1;}
-			   else if (conservSuppr.getValue(i, j)==-1){imageInt[i][j] = 0; makeDiag(i,j,imageInt);}
-			   else imageInt[i][j] = 0;
+	   public int[][] interestPPM(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv) {
+		   //initialisation tableau même taille
+		   int i,j;
+		   int[][] imageInt = new int[image.length][image[0].length];
+		   
+		   int[] rgb;
+		   int[] rgb2;
+		   int[] rgb3;
+		   
+		   for(i=0;i<image.length;i++)
+		   {
+			   rgb = getRGB(image[i][image[i].length-2]);
+			   rgb2 = getRGB(image[i][image[i].length-1]);
+			   imageInt[i][image[i].length-1] = 1;
+			   for(int couleur = 0; couleur<3;couleur++) imageInt[i][image[i].length-1] += Math.abs(rgb[couleur]-rgb2[couleur]);
+			   if(conservSuppr.getValue(i,image[i].length-1)==-1) {
+				   suppr.add(((image[i].length-1)*img.length)+i+1);
+				   imageInt[i][image[i].length-1]=0;
+			   } else if(conservSuppr.getValue(i,image[i].length-1)==1) {
+				   conserv.add(((image[i].length-1)*img.length)+i+1);
+			   }
+			   for(j=image[i].length-2;j>0;j--)
+			   {
+				   rgb = getRGB(image[i][j]);
+				   rgb2 = getRGB(image[i][j-1]);
+				   rgb3 = getRGB(image[i][j+1]);
+				   imageInt[i][j] = 1;
+				   for(int couleur = 0; couleur<3;couleur++) imageInt[i][j] += Math.abs(rgb[couleur] -(int)((rgb2[couleur]+rgb3[couleur])/2));
+				   if(conservSuppr.getValue(i,j)==-1) {
+					   suppr.add((img.length*j)+i+1);
+					   imageInt[i][j] = 0;
+				   } else if(conservSuppr.getValue(i,j)==1) {
+					   conserv.add((img.length*j)+i+1);
+				   }
+			   }
+			   rgb = getRGB(image[i][0]);
+			   rgb2 = getRGB(image[i][1]);
+			   imageInt[i][0] = 1;
+			   for(int couleur = 0; couleur<3;couleur++) imageInt[i][j] += Math.abs(rgb[couleur]-rgb2[couleur]);
+			   if(conservSuppr.getValue(i,0)==-1) {
+				   suppr.add(i+1);
+				   imageInt[i][0]=0;
+			   } else if (conservSuppr.getValue(i, 0)==1) {
+				   conserv.add(i+1);
+			   }
 		   }
+		   
+		   return imageInt;
 	   }
 	   
-	   public void makeDiag(int i, int j, int[][] imageInt) {
-		   int k = 1;
-		   
-		   while((j+k)<imageInt[i].length && (i+k)<imageInt.length) {
-			   
-			   imageInt[i+k][j+k] = imageInt[i][j];
-			   if(conservSuppr.getValue(i+k,j+k)!=1) conservSuppr.setValue(i+k, j+k, -2);
-			   k++;
-		   }
-		   
-		   k = 1;
-		   while((j+k)<imageInt[i].length && (i-k)>=0) {
-			   
-			   imageInt[i-k][j+k] = imageInt[i][j];
-			   k++;
-		   }
+	   public int[] getRGB(int caseTab) {
+		   int[] rgb = new int[3];
+		   int i = caseTab;
+			rgb[2] = (i/(1000000));
+	   		i = i%1000000;
+	   		rgb[1] = (i/(1000));
+	   		i = i%1000;
+	   		rgb[0] = i;
+	   		return rgb;
 	   }
+	   
 	   
 	@SuppressWarnings("static-access")
 	/**
@@ -204,14 +237,15 @@ public class Modele extends Observable {
 				reduc = img[0].length-2;
 			}
 			for(int depix = 0; depix<reduc; depix++) {
+				System.out.println("Traitement : "+((depix*100)/reduc)+"%");
 				generationGraph();
 				ArrayList<Integer> coupe = g.coupeMin();
 				if(img[0].length>2) {
 				img = removeColonne(coupe);
-				System.out.println("Traitement : "+((depix*100)/reduc)+"%");
 				}
 				
 			}
+			System.out.println("Traitement : Fini.");
 		}
 	}
 	

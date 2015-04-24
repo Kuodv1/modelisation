@@ -186,12 +186,13 @@ public class SeamCarving
 		        {
 		        	for(j =0;j<image[i].length;j++)
 		        	{
+		        		int caseTab = image[i][j];
 		        		//rouge - vert - bleu
-		        		String bleu = ((int)(image[i][j]/(1000000))+" ");
-		        		image[i][j] = image[i][j]%1000000;
-		        		String vert = ((int)(image[i][j]/(1000))+" ");
-		        		image[i][j] = image[i][j]%1000;
-		        		String rouge = image[i][j]+" ";
+		        		String bleu = ((int)(caseTab/(1000000))+" ");
+		        		caseTab = caseTab%1000000;
+		        		String vert = ((int)(caseTab/(1000))+" ");
+		        		caseTab = caseTab%1000;
+		        		String rouge = caseTab+" ";
 		        		writer.write(rouge,0,rouge.length());
 		        		boucle++;
 		        		if(boucle==70) {
