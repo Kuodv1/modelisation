@@ -126,6 +126,24 @@ public class Graph
 		}
    }
    
+   public void buildGraph(int[][][] itr) {
+		buildGraph(itr[0]);
+		//edge from, to , capacity, used
+		int numSommet = 1;
+		for(int j = 0; j<itr[0][0].length;j++) {
+			addEdge(new Edge(numSommet,numSommet+1,itr[2][0][j],0));
+			numSommet++;
+			for(int i = 1; i<itr[0].length-1;i++) {
+				addEdge(new Edge(numSommet,numSommet+1,itr[2][i][j],0));
+				addEdge(new Edge(numSommet,numSommet-1,itr[1][i][j],0));
+				numSommet++;
+			}
+			addEdge(new Edge(numSommet,numSommet-1,itr[1][itr[1].length-1][j],0));
+			numSommet++;
+		}
+		
+   }
+   
    /**
     * Retourne la position de l'ar�te � l'aide des param�tres from et to
     * @param from

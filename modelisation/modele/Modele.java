@@ -12,6 +12,7 @@ public class Modele extends Observable {
 	int [][] img;
 	int [][] interest;
 	Selection conservSuppr;
+	protected String methode;
 	Graph g;
 	int choix; //0 = pas de selection, 1 = conservation, 2 = supprimer
 	
@@ -22,6 +23,7 @@ public class Modele extends Observable {
 		sc = new SeamCarving();
 		lienImg = "";
 		img = null;
+		methode = "classique";
 		choix = 0;
 	}
 	
@@ -31,6 +33,14 @@ public class Modele extends Observable {
 	 */
 	public String getLink() {
 		return lienImg;
+	}
+	
+	public String getMethode() {
+		return methode;
+	}
+	
+	public void setMethode(String methode) {
+		this.methode = methode;
 	}
 	
 	/**
@@ -56,7 +66,6 @@ public class Modele extends Observable {
 		
 		 conservSuppr = new Selection(img.length,img[0].length);
 		 
-		 //generationGraph();
 		 System.out.println("Image chargé. Réduction possible.");
 		 update();
 	}
@@ -76,12 +85,29 @@ public class Modele extends Observable {
 	public void generationGraph() {
 		ArrayList<Integer> suppr = new ArrayList<Integer>();
 		ArrayList<Integer> conserv = new ArrayList<Integer>();
-		if(lienImg.endsWith(".pgm")) interest = interest(img,suppr, conserv);
+		if(lienImg.endsWith(".pgm")) {
+			interest = interest(img,suppr, conserv);
+		}
 		else if (lienImg.endsWith(".ppm")) interest = interestPPM(img,suppr,conserv);
 		g = toGraph(interest);
 		if(suppr.size()>0) g.modifInteretSuppr(suppr);
 		if(conserv.size()>0) g.modifInteretConserv(conserv);
 		defaultFlot();
+		getGraphResidu();
+	}
+	
+	public void generationGraphEnergie() {
+		ArrayList<Integer> suppr = new ArrayList<Integer>();
+		ArrayList<Integer> conserv = new ArrayList<Integer>();
+		int[][][] interestE = new int[0][0][0];
+		if(lienImg.endsWith(".pgm")) {
+			interestE = interestEnergieAvant(img,suppr,conserv);
+		} else if (lienImg.endsWith(".ppm")) {
+			interestE = interestEnergieAvant(img,suppr,conserv);
+		}
+		g = toGraph(interestE);
+		if(suppr.size()>0) g.modifInteretSuppr(suppr);
+		if(conserv.size()>0) g.modifInteretConserv(conserv);
 		getGraphResidu();
 	}
 	
@@ -126,7 +152,97 @@ public class Modele extends Observable {
 		   
 		   return imageInt;
 	   }
-	
+
+	   public void test() {
+			ArrayList<Integer> suppr = new ArrayList<Integer>();
+			ArrayList<Integer> conserv = new ArrayList<Integer>();
+		   int[][][] test = interestEnergieAvant(img,suppr,conserv);
+		   StringBuilder sImage = new StringBuilder();
+		   StringBuilder s = new StringBuilder();
+		   StringBuilder s2 = new StringBuilder();
+		   StringBuilder s3 = new StringBuilder();
+		   for(int j = 0; j<test[0].length;j++) {
+			   for(int k = 0; k<test[0][j].length;k++) {
+				   sImage.append(img[j][k]+" ");
+				   s.append(test[0][j][k]+" ");
+				   s2.append(test[1][j][k]+" ");
+				   s3.append(test[2][j][k]+" ");
+			   }
+			   sImage.append("\n");
+			   s.append("\n");
+			   s2.append("\n");
+			   s3.append("\n");
+		   }
+		   System.out.println(sImage+"\n\n"+s+"\n\n"+s2+"\n\n"+s3);
+	   }
+	   
+	   public int[][][] interestEnergieAvant(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv)
+	   {		   
+		 //initialisation tableau même taille
+		   int i,j;
+		   int[][][] imageInt = new int[3][image.length][image[0].length];//0 arrête vers droite - 1 arrête vers Haut - 2 arrête vers bas
+
+		   for(j = 1;j<image[0].length-1;j++) {
+			   imageInt[0][0][j] = 1 + interestDroite(0,j,image);
+			   imageInt[1][0][j] = 0;
+			   imageInt[2][0][j] = 1 + interestBas(0,j,image);
+			   
+			   for(i = 1;i<image.length-1;i++) {
+				  imageInt[0][i][j] = 1 + interestDroite(i,j,image);
+				  imageInt[1][i][j] = 1 + interestHaut(i,j,image);
+				  imageInt[2][i][j] = 1 + interestBas(i,j,image);
+			   }
+			   
+			   imageInt[0][image.length-1][j] = 1 + interestDroite(image.length-1,j,image);
+			   imageInt[1][image.length-1][j] = 1 + interestHaut(image.length-1,j,image);
+			   imageInt[2][image.length-1][j] = 0;
+			   
+		   }
+		   
+		   //i=0
+		   imageInt[0][0][0] = 1 + image[0][1];
+		   imageInt[0][0][image[0].length-1] = 1 + image[0][image[0].length-2];
+		   imageInt[1][0][0] = 0;
+		   imageInt[1][0][image[0].length-1] = 0;
+		   imageInt[2][0][0] = 1 + image[1][0];
+		   imageInt[2][0][image[0].length-1] = 1 + interestBas(0,image[0].length-1,image);
+		   
+		   for(i = 1;i<image.length-1;i++) {
+			   imageInt[0][i][0] = 1 + image[i][1];
+			   imageInt[0][i][image[i].length-1] = 1 + image[i][image[i].length-2];
+			   imageInt[1][i][0] = 1 + image[i-1][0];
+			   imageInt[1][i][image[i].length-1] = 1 + interestHaut(i,image[i].length-1,image);
+			   imageInt[2][i][0] = 1 + image[i+1][0];
+			   imageInt[2][i][image[i].length-1] = 1 + interestBas(i,image[i].length-1,image);
+		   }
+		   
+		   //i=image.length-1
+		   i = image.length-1;
+		   imageInt[0][i][0] = 1 + image[i][1];
+		   imageInt[0][i][image[i].length-1] = 1 + image[i][image[i].length-2];
+		   imageInt[1][i][0] = 1 + image[i-1][0];
+		   imageInt[1][i][image[i].length-1] = 1 + interestHaut(i,image[i].length-1,image);
+		   imageInt[2][i][0] = 0;
+		   imageInt[2][i][image[i].length-1] = 0;
+		   
+		   return imageInt;
+	   }
+	   
+	   public int interestDroite(int i, int j, int[][] image) {
+		   //(i,j) -> (i,j+1) |M(i,j+1) - M(i,j-1)|
+		   return Math.abs(image[i][j+1]-image[i][j-1]);
+	   }
+	   
+	   public int interestHaut(int i, int j, int[][] image) {
+		   //(i,j) -> (i-1,j) |M(i-1,j) - M(i,j-1)|
+		   return Math.abs(image[i-1][j] - image[i][j-1]);
+	   }
+	   
+	   public int interestBas(int i, int j, int[][] image) {
+		   //(i,j) -> (i+1,j) |M(i+1,j) - M(i,j-1)|
+		   return Math.abs(image[i+1][j]-image[i][j-1]);
+	   }
+	   
 	   public int[][] interestPPM(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv) {
 		   //initialisation tableau même taille
 		   int i,j;
@@ -177,6 +293,89 @@ public class Modele extends Observable {
 		   return imageInt;
 	   }
 	   
+	   public int[][][] interestEnergieAvantPPM(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv)
+	   {		   
+		 //initialisation tableau même taille
+		   int i,j;
+		   int[][][] imageInt = new int[3][image.length][image[0].length];//0 arrête vers droite - 1 arrête vers Haut - 2 arrête vers bas
+
+		   for(j = 1;j<image[0].length-1;j++) {
+			   imageInt[0][0][j] = 1 + interestDroitePPM(0,j,image);
+			   imageInt[1][0][j] = 0;
+			   imageInt[2][0][j] = 1 + interestBasPPM(0,j,image);
+			   
+			   for(i = 1;i<image.length-1;i++) {
+				  imageInt[0][i][j] = 1 + interestDroitePPM(i,j,image);
+				  imageInt[1][i][j] = 1 + interestHautPPM(i,j,image);
+				  imageInt[2][i][j] = 1 + interestBas(i,j,image);
+			   }
+			   
+			   imageInt[0][image.length-1][j] = 1 + interestDroitePPM(image.length-1,j,image);
+			   imageInt[1][image.length-1][j] = 1 + interestHautPPM(image.length-1,j,image);
+			   imageInt[2][image.length-1][j] = 0;
+			   
+		   }
+		   
+		   //i=0
+		   imageInt[0][0][0] = 1 + interestRGBCase(0,1,image);
+		   imageInt[0][0][image[0].length-1] = 1 + interestRGBCase(0,image[0].length-2,image);
+		   imageInt[1][0][0] = 0;
+		   imageInt[1][0][image[0].length-1] = 0;
+		   imageInt[2][0][0] = 1 + interestRGBCase(1,0,image);
+		   imageInt[2][0][image[0].length-1] = 1 + interestBasPPM(0,image[0].length-1,image);
+		   
+		   for(i = 1;i<image.length-1;i++) {
+			   imageInt[0][i][0] = 1 + interestRGBCase(i,1,image);
+			   imageInt[0][i][image[i].length-1] = 1 + interestRGBCase(i,image[i].length-2,image);
+			   imageInt[1][i][0] = 1 + interestRGBCase(i-1,0,image);
+			   imageInt[1][i][image[i].length-1] = 1 + interestHautPPM(i,image[i].length-1,image);
+			   imageInt[2][i][0] = 1 + interestRGBCase(i+1,0,image);
+			   imageInt[2][i][image[i].length-1] = 1 + interestBasPPM(i,image[i].length-1,image);
+		   }
+		   
+		   //i=image.length-1
+		   i = image.length-1;
+		   imageInt[0][i][0] = 1 + image[i][1];
+		   imageInt[0][i][image[i].length-1] = 1 + image[i][image[i].length-2];
+		   imageInt[1][i][0] = 1 + interestRGBCase(i-1,0,image);
+		   imageInt[1][i][image[i].length-1] = 1 + interestHautPPM(i,image[i].length-1,image);
+		   imageInt[2][i][0] = 0;
+		   imageInt[2][i][image[i].length-1] = 0;
+		   
+		   return imageInt;
+	   }
+	   
+	   public int interestDroitePPM(int i, int j, int[][] image) {
+		   int rgb[] = getRGB(image[i][j+1]);
+		   int rgb2[] = getRGB(image[i][j-1]);
+		   int ret = 0;
+		   for(int couleur = 0; couleur<3;couleur++) ret+= Math.abs(rgb[couleur]-rgb2[couleur]);
+		   return ret;
+	   }
+	   
+	   public int interestHautPPM(int i, int j, int[][] image) {
+		   int rgb[] = getRGB(image[i-1][j]);
+		   int rgb2[] = getRGB(image[i][j-1]);
+		   int ret = 0;
+		   for(int couleur = 0; couleur<3;couleur++) ret+= Math.abs(rgb[couleur]-rgb2[couleur]);
+		   return ret;
+	   }
+	   
+	   public int interestBasPPM(int i, int j, int[][] image) {
+		   int rgb[] = getRGB(image[i+1][j]);
+		   int rgb2[] = getRGB(image[i][j-1]);
+		   int ret = 0;
+		   for(int couleur = 0; couleur<3;couleur++) ret+= Math.abs(rgb[couleur]-rgb2[couleur]);
+		   return ret;
+	   }
+	   
+	   public int interestRGBCase(int i, int j, int[][]image) {
+		   int ret = 0;
+		   int rgb[] = getRGB(image[i][j]);
+		   for(int couleur = 0; couleur<3;couleur++) ret+=rgb[couleur];
+		   return ret;
+	   }
+	   
 	   public int[] getRGB(int caseTab) {
 		   int[] rgb = new int[3];
 		   int i = caseTab;
@@ -197,6 +396,12 @@ public class Modele extends Observable {
 	 */
 	public Graph toGraph(int[][] itr) {
 		Graph graph = new Graph(itr.length*itr[0].length+2);
+		graph.buildGraph(itr);
+		return graph;
+	}
+	
+	public Graph toGraph(int[][][] itr) {
+		Graph graph = new Graph(itr[0].length*itr[0][0].length+2);
 		graph.buildGraph(itr);
 		return graph;
 	}
@@ -238,7 +443,8 @@ public class Modele extends Observable {
 			}
 			for(int depix = 0; depix<reduc; depix++) {
 				System.out.println("Traitement : "+((depix*100)/reduc)+"%");
-				generationGraph();
+				if(methode.equals("Classique")) generationGraph();
+				else if(methode.equals("Energie avant")) generationGraphEnergie();
 				ArrayList<Integer> coupe = g.coupeMin();
 				if(img[0].length>2) {
 				img = removeColonne(coupe);
@@ -294,7 +500,6 @@ public class Modele extends Observable {
 	 * @return
 	 */
 	public int[][] removeColonne(ArrayList<Integer> coupe) {
-		for(Integer i : coupe) {System.out.println(i);}
 		int [][] newImage = new int[img.length][img[0].length-1];
 		Selection newConservSuppr = new Selection(conservSuppr.getHauteur(),conservSuppr.getLargeur()-1);
 		for(int i=0;i<newImage.length-1;i++) {
