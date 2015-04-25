@@ -15,6 +15,7 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 	protected int boutonChoisi;
 	protected boolean surImage;
 	protected Point p1;
+	protected Point p2;
 	protected Modele m;
 	
 	public EcouteurSelection(Modele m) {
@@ -34,7 +35,8 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 		if(isClick && evt.getButton()==boutonChoisi) {
 			isClick = false;
 			if(boutonChoisi == ButtonLeft) {//System.out.println("Relachement BoutonGauche");
-			m.select(p1, new Point(evt.getX(),evt.getY()));
+				if(surImage) m.select(p1, new Point(evt.getX(),evt.getY()));
+				else m.select(p1, p2);
 			}
 		}
 		
@@ -46,7 +48,15 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
+	public void mouseExited(MouseEvent evt) {
+		int x = evt.getX();
+		if(x<0) x=0;
+		else if(x>m.getLargeur()) {x = m.getLargeur()-1;}
+		
+		int y = evt.getY();
+		if(y<0) y =0;
+		else if (y>m.getHauteur()) {y= m.getHauteur()-1;}
+		p2 = new Point(x,y);
 		surImage = false;		
 	}
 

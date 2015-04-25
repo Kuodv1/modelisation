@@ -606,6 +606,16 @@ public class Modele extends Observable {
 		return conservSuppr.annulerSelectPossible();
 	}
 
+	
+	public int getHauteur() {
+		if(img!=null) return img.length;
+		else return 0;
+	}
+	
+	public int getLargeur() {
+		if(img!=null) return img[0].length;
+		else return 0;
+	}
 
 	/**
 	 * les observateurs du mod�le vont �tre pr�venus du changement
