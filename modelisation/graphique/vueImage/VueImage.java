@@ -63,7 +63,6 @@ public class VueImage extends JPanel implements Observer {
 					affi.dessiner(m);
 				}
 			}
-			System.out.println("repaint");
 			repaint();
 			
 		}

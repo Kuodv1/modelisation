@@ -546,18 +546,8 @@ public class Modele extends Observable {
 	
 	public void setAction(int choix) {
 		this.choix = choix;
-		System.out.println("Choix "+choix);
 	}
-	
-/*	public void zoneSelectionne(int x, int y, boolean chgt) {
-		if(choix == 1) {
-			if(chgt) conservSuppr.s[y][x] = 1;
-			else conservSuppr[y][x] = 0;
-		} else if(choix == 2) {
-			if(chgt) conservSuppr[y][x] = -1;
-			else conservSuppr[y][x] = 0;
-		}
-	}*/
+
 	
 	public void select(Point p1, Point p2){
 		if(choix!=0) {
@@ -615,21 +605,8 @@ public class Modele extends Observable {
 	public boolean annulerSelectPossible() {
 		return conservSuppr.annulerSelectPossible();
 	}
-	
-	/*public void recap() {
-		int cons =0;
-		int suppr = 0;
-		for(int i = 0; i<conservSuppr.length;i++) {
-			for(int j = 0; j<conservSuppr[0].length;j++) {
-				if(conservSuppr[i][j]!=0) {
-					if(conservSuppr[i][j]==1) cons++;
-					else suppr++;
-				}
-			}
-		}
-		System.out.println("conserv : "+cons+" - suppr : "+suppr);
-	}
-	*/
+
+
 	/**
 	 * les observateurs du mod�le vont �tre pr�venus du changement
 	 */

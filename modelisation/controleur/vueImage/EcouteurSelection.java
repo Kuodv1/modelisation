@@ -33,10 +33,9 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 	public void mouseReleased(MouseEvent evt) {
 		if(isClick && evt.getButton()==boutonChoisi) {
 			isClick = false;
-			if(boutonChoisi == ButtonLeft) {System.out.println("Relachement BoutonGauche");
+			if(boutonChoisi == ButtonLeft) {//System.out.println("Relachement BoutonGauche");
 			m.select(p1, new Point(evt.getX(),evt.getY()));
 			}
-			//m.recap();
 		}
 		
 	}
@@ -56,12 +55,12 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 		if(evt.getButton()==ButtonLeft && !isClick) {
 			isClick = true;
 			boutonChoisi = ButtonLeft;
-			System.out.println("Bouton gauche");
+			//System.out.println("Bouton gauche");
 			p1 = new Point(evt.getX(),evt.getY());
 		} else if(evt.getButton()==ButtonRight && !isClick) {
 			isClick = true;
 			boutonChoisi = ButtonRight;
-			System.out.println("Bouton Droit");
+			//System.out.println("Bouton Droit");
 			p1 = new Point(evt.getX(),evt.getY());
 		}
 		
@@ -69,10 +68,6 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 
 	@Override
 	public void mouseDragged(MouseEvent evt) {
-		//if(surImage) {
-		//	if(boutonChoisi == ButtonLeft) m.zoneSelectionne(evt.getX(), evt.getY(), true);
-		//	else if (boutonChoisi == ButtonRight) m.zoneSelectionne(evt.getX(), evt.getY(), false);
-		//}
 	}
 
 	@Override
