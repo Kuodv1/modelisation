@@ -125,56 +125,19 @@ public class Modele extends Observable {
 		   for(i=0;i<image.length;i++)
 		   {
 			   imageInt[i][image[i].length-1] = 1 + Math.abs((image[i][image[i].length-2]-image[i][image[i].length-1]));
-			   if(conservSuppr.getValue(i,image[i].length-1)==-1) {
-				   suppr.add(((image[i].length-1)*img.length)+i+1);
-				   imageInt[i][image[i].length-1]=0;
-			   } else if(conservSuppr.getValue(i,image[i].length-1)==1) {
-				   conserv.add(((image[i].length-1)*img.length)+i+1);
-			   }
+			   conservSupprPixel(i, image[i].length-1, imageInt,suppr,conserv);
 			   for(j=image[i].length-2;j>0;j--)
 			   {
 				   imageInt[i][j] = 1+ Math.abs(image[i][j]-(int)((image[i][j-1]+image[i][j+1])/2));
-				   if(conservSuppr.getValue(i,j)==-1) {
-					   suppr.add((img.length*j)+i+1);
-					   imageInt[i][j] = 0;
-				   } else if(conservSuppr.getValue(i,j)==1) {
-					   conserv.add((img.length*j)+i+1);
-				   }
+				   conservSupprPixel(i, j, imageInt,suppr,conserv);
 			   }
 			   imageInt[i][0] = 1 + Math.abs((image[i][0]-image[i][1]));
-			   if(conservSuppr.getValue(i,0)==-1) {
-				   suppr.add(i+1);
-				   imageInt[i][0]=0;
-			   } else if (conservSuppr.getValue(i, 0)==1) {
-				   conserv.add(i+1);
-			   }
+			   conservSupprPixel(i,0, imageInt,suppr,conserv);
 		   }
 		   
 		   return imageInt;
 	   }
 
-	   public void test() {
-			ArrayList<Integer> suppr = new ArrayList<Integer>();
-			ArrayList<Integer> conserv = new ArrayList<Integer>();
-		   int[][][] test = interestEnergieAvant(img,suppr,conserv);
-		   StringBuilder sImage = new StringBuilder();
-		   StringBuilder s = new StringBuilder();
-		   StringBuilder s2 = new StringBuilder();
-		   StringBuilder s3 = new StringBuilder();
-		   for(int j = 0; j<test[0].length;j++) {
-			   for(int k = 0; k<test[0][j].length;k++) {
-				   sImage.append(img[j][k]+" ");
-				   s.append(test[0][j][k]+" ");
-				   s2.append(test[1][j][k]+" ");
-				   s3.append(test[2][j][k]+" ");
-			   }
-			   sImage.append("\n");
-			   s.append("\n");
-			   s2.append("\n");
-			   s3.append("\n");
-		   }
-		   System.out.println(sImage+"\n\n"+s+"\n\n"+s2+"\n\n"+s3);
-	   }
 	   
 	   public int[][][] interestEnergieAvant(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv)
 	   {		   
@@ -186,16 +149,19 @@ public class Modele extends Observable {
 			   imageInt[0][0][j] = 1 + interestDroite(0,j,image);
 			   imageInt[1][0][j] = 0;
 			   imageInt[2][0][j] = 1 + interestBas(0,j,image);
+			   conservSupprPixelEnergie(0, j, imageInt,suppr,conserv);
 			   
 			   for(i = 1;i<image.length-1;i++) {
 				  imageInt[0][i][j] = 1 + interestDroite(i,j,image);
 				  imageInt[1][i][j] = 1 + interestHaut(i,j,image);
 				  imageInt[2][i][j] = 1 + interestBas(i,j,image);
+				  conservSupprPixelEnergie(i,j, imageInt,suppr,conserv);
 			   }
 			   
 			   imageInt[0][image.length-1][j] = 1 + interestDroite(image.length-1,j,image);
 			   imageInt[1][image.length-1][j] = 1 + interestHaut(image.length-1,j,image);
 			   imageInt[2][image.length-1][j] = 0;
+			   conservSupprPixelEnergie(image.length-1, j, imageInt,suppr,conserv);
 			   
 		   }
 		   
@@ -207,6 +173,9 @@ public class Modele extends Observable {
 		   imageInt[2][0][0] = 1 + image[1][0];
 		   imageInt[2][0][image[0].length-1] = 1 + interestBas(0,image[0].length-1,image);
 		   
+		   conservSupprPixelEnergie(0,0, imageInt,suppr,conserv);
+		   conservSupprPixelEnergie(0,image[0].length-1, imageInt,suppr,conserv);
+		   
 		   for(i = 1;i<image.length-1;i++) {
 			   imageInt[0][i][0] = 1 + image[i][1];
 			   imageInt[0][i][image[i].length-1] = 1 + image[i][image[i].length-2];
@@ -214,6 +183,9 @@ public class Modele extends Observable {
 			   imageInt[1][i][image[i].length-1] = 1 + interestHaut(i,image[i].length-1,image);
 			   imageInt[2][i][0] = 1 + image[i+1][0];
 			   imageInt[2][i][image[i].length-1] = 1 + interestBas(i,image[i].length-1,image);
+			   
+			   conservSupprPixelEnergie(i, 0, imageInt,suppr,conserv);
+			   conservSupprPixelEnergie(i, image[i].length-1, imageInt,suppr,conserv);
 		   }
 		   
 		   //i=image.length-1
@@ -225,7 +197,44 @@ public class Modele extends Observable {
 		   imageInt[2][i][0] = 0;
 		   imageInt[2][i][image[i].length-1] = 0;
 		   
+		   conservSupprPixelEnergie(i, 0, imageInt,suppr,conserv);
+		   conservSupprPixelEnergie(i, image[i].length-1, imageInt,suppr,conserv);
+		   
 		   return imageInt;
+	   }
+	   
+	   public void conservSupprPixel(int i, int j, int[][] itr, ArrayList<Integer> suppr, ArrayList<Integer> conserv) {
+		   if(conservSuppr.getValue(i, j)!=0) {
+			   if(conservSuppr.getValue(i, j)==-1) supprPixel(i,j,itr,suppr);
+			   else conservPixel(i,j,itr,conserv);
+		   }
+	   }
+
+	   public void conservSupprPixelEnergie(int i, int j, int[][][] itr, ArrayList<Integer> suppr, ArrayList<Integer> conserv){
+		   if(conservSuppr.getValue(i, j)!=0) {
+			   if(conservSuppr.getValue(i, j)==-1) supprPixelEnergie(i,j,itr,suppr);
+			   else conservPixelEnergie(i,j,itr,conserv);
+		   }
+	   }
+	   
+	   public void supprPixel(int i, int j, int[][] imageInt, ArrayList<Integer> suppr) {
+		   suppr.add((imageInt.length*j)+i+1);
+		   imageInt[i][j] = 0;
+	   }
+	   
+	   public void supprPixelEnergie(int i, int j, int[][][] imageInt, ArrayList<Integer> suppr) {
+		   suppr.add((imageInt[0].length*j)+i+1);
+		   imageInt[0][i][j] = 0;
+		   imageInt[1][i][j] = 0;
+		   imageInt[2][i][j] = 0;
+	   }
+	   
+	   public void conservPixel(int i, int j, int[][] imageInt, ArrayList<Integer> conserv) {
+		   conserv.add((imageInt.length*j)+1+i);
+	   }
+	   
+	   public void conservPixelEnergie(int i, int j, int[][][] imageInt, ArrayList<Integer> conserv) {
+		   conserv.add((imageInt[0].length*j)+1+i);
 	   }
 	   
 	   public int interestDroite(int i, int j, int[][] image) {
@@ -258,12 +267,7 @@ public class Modele extends Observable {
 			   rgb2 = getRGB(image[i][image[i].length-1]);
 			   imageInt[i][image[i].length-1] = 1;
 			   for(int couleur = 0; couleur<3;couleur++) imageInt[i][image[i].length-1] += Math.abs(rgb[couleur]-rgb2[couleur]);
-			   if(conservSuppr.getValue(i,image[i].length-1)==-1) {
-				   suppr.add(((image[i].length-1)*img.length)+i+1);
-				   imageInt[i][image[i].length-1]=0;
-			   } else if(conservSuppr.getValue(i,image[i].length-1)==1) {
-				   conserv.add(((image[i].length-1)*img.length)+i+1);
-			   }
+			   conservSupprPixel(i, image[i].length-1, imageInt,suppr,conserv);
 			   for(j=image[i].length-2;j>0;j--)
 			   {
 				   rgb = getRGB(image[i][j]);
@@ -271,23 +275,13 @@ public class Modele extends Observable {
 				   rgb3 = getRGB(image[i][j+1]);
 				   imageInt[i][j] = 1;
 				   for(int couleur = 0; couleur<3;couleur++) imageInt[i][j] += Math.abs(rgb[couleur] -(int)((rgb2[couleur]+rgb3[couleur])/2));
-				   if(conservSuppr.getValue(i,j)==-1) {
-					   suppr.add((img.length*j)+i+1);
-					   imageInt[i][j] = 0;
-				   } else if(conservSuppr.getValue(i,j)==1) {
-					   conserv.add((img.length*j)+i+1);
-				   }
+				   conservSupprPixel(i, j, imageInt,suppr,conserv);
 			   }
 			   rgb = getRGB(image[i][0]);
 			   rgb2 = getRGB(image[i][1]);
 			   imageInt[i][0] = 1;
 			   for(int couleur = 0; couleur<3;couleur++) imageInt[i][j] += Math.abs(rgb[couleur]-rgb2[couleur]);
-			   if(conservSuppr.getValue(i,0)==-1) {
-				   suppr.add(i+1);
-				   imageInt[i][0]=0;
-			   } else if (conservSuppr.getValue(i, 0)==1) {
-				   conserv.add(i+1);
-			   }
+			   conservSupprPixel(i, 0, imageInt,suppr,conserv);
 		   }
 		   
 		   return imageInt;
