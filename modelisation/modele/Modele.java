@@ -445,7 +445,7 @@ public class Modele extends Observable {
 				}
 				
 			}
-			System.out.println("Traitement : Fini.");
+			System.out.println("Traitement : 100%.");
 		}
 	}
 	
