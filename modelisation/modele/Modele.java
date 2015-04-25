@@ -459,13 +459,10 @@ public class Modele extends Observable {
 	public void rotationGauche() {
 		if(img!=null) {
 			int[][] newImage = new int[img[0].length][img.length];
-			StringBuilder sb = new StringBuilder();
 			for(int i = 0;i<newImage.length;i++) {
 				for(int j = 0; j<newImage[i].length;j++) {
 					newImage[i][j] = img[j][newImage.length-1-i];
-					sb.append(newImage[i][j]+" ");
 				}
-				sb.append("\n");
 			}
 			img = newImage;
 			conservSuppr.rotationGauche();
@@ -475,13 +472,10 @@ public class Modele extends Observable {
 	public void rotationDroite() {
 		if(img!=null) {
 			int[][] newImage = new int[img[0].length][img.length];
-			StringBuilder sb = new StringBuilder();
 			for(int i = 0; i<newImage.length;i++) {
 				for(int j = 0; j<newImage[i].length;j++) {
 					newImage[i][j] = img[newImage[i].length-j-1][i];
-					sb.append(newImage[i][j]+" ");
 				}
-				sb.append("\n");
 			}
 			img = newImage;
 			conservSuppr.rotationDroite();

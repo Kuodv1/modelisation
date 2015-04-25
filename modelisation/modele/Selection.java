@@ -55,11 +55,14 @@ public class Selection {
 	
 	public void rotationGauche() {
 			int[][] newSelect = new int[getLargeur()][getHauteur()];
+			
 			for(int i = 0;i<newSelect.length;i++) {
 				for(int j = 0; j<newSelect[i].length;j++) {
 					newSelect[i][j] = select[j][newSelect.length-1-i];
 				}
 			}
+			
+			this.select = newSelect;
 	}
 	
 	public void rotationDroite() {
@@ -69,6 +72,7 @@ public class Selection {
 					newSelect[i][j] = select[newSelect[i].length-j-1][i];
 				}
 			}
+			this.select = newSelect;
 	}
 	
 	public void supprimerSelection(int x, int y) {
