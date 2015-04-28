@@ -1,0 +1,17 @@
+                                                      Partie thérorique 
+
+1.
+
+Soit (S, T) la coupe minimale.
+Par définition, On appelle coupe S-T de G, un sous-ensemble de sommets D = (S,T) qui partage V en deux ensembles S et T, tel que s ∈ S et t ∈ T . De plus, D est  l'ensemble des arêtes séparant S de T.
+Dans le cas d'une image quelconque, toutes les arêtes d'un sommet T à un sommet S sont reliées à la précédente dont la capacité de l'arrête est infinie.
+Il est donc impossible d'avoir un sommet de T suivi d'un sommet de S car celle ci à une arrête de capacité infinie et donc la capacité max ne pourra jamais être atteinte.
+Par conséquent, on a sur une ligne en premier lieu des sommets de S et ensuite des sommets de T.
+Donc un seul sommet de S suivi immédiatement par un sommet de T.
+
+
+2.
+Si nous prenons le cas où les sommets de S et T n'appartiennent pas au 3 cas proposés l'on , cela voudrait dire qu'il existera toujours un chemin de S à T avec les arêtes transversales entre 
+-(i, j) et (i+1, j-1),
+-(i+1, j+1) et (i, j) 
+et ainsi la coupe obtenu ne sera pas une coupe minimale
