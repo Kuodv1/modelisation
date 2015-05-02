@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import modelisation.graphique.barreLaterale.VueBarreLaterale;
 import modelisation.graphique.menubarre.VueMenuBarre;
 import modelisation.graphique.vueImage.AffichageCentrale;
-import modelisation.graphique.vueImage.VueImage;
 
 public class Modelisation extends JFrame{
 

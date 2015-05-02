@@ -1,6 +1,5 @@
 package modelisation.modele;
 
-import java.util.ArrayList;
 import java.io.*;
 import java.util.*;
 public class SeamCarving

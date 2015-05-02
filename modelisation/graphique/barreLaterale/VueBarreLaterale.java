@@ -7,7 +7,6 @@ import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import modelisation.controleur.barreLaterale.AnnulerSelection;
 import modelisation.controleur.barreLaterale.EcouteurChargerImage;

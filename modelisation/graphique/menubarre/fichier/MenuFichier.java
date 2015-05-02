@@ -2,13 +2,8 @@ package modelisation.graphique.menubarre.fichier;
 
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 import modelisation.controleur.menubarre.fichier.EcouteurQuitter;
 import modelisation.modele.Modele;
