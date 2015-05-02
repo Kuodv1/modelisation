@@ -13,11 +13,19 @@ public class EcouteurChargerImage implements ActionListener {
 
 	protected Modele m;
 	
+	/**
+	 * Constructeur EcouteurChargerImage
+	 * @param m
+	 */
 	public EcouteurChargerImage(Modele m) {
 		this.m = m;
 	}
 	
 	@Override
+	/**
+	 * Fonction est appelé quand une action se produit
+	 * @param e
+	 */
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser dialogue = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("*.pgm,*.ppm","pgm","ppm");
