@@ -226,6 +226,11 @@ public class Graph
 	   return (adj.length-2)/getNbLine();
    }
    
+   /**
+    * Retourne une arraylist de sommet d'une ligne du graphe
+    * @param numLigne
+    * @return 
+    */
    public ArrayList<Edge> getLine(int numLigne) {
 	   int numSommet = numLigne;
 	   ArrayList<Edge> result = new ArrayList<Edge>();
