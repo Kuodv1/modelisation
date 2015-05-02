@@ -55,7 +55,7 @@ public class SeamCarving
 	
 
 	   /**
-	    * Affiche les lignes du fichier fn
+	    * Affiche les lignes du fichier fn de format pgm
 	    * @param fn
 	    * @return
 	    */
@@ -91,6 +91,11 @@ public class SeamCarving
 	        }
 	    }
 	   
+	   /**
+	    * Affiche les lignes du fichier fn de format ppm
+	    * @param fn
+	    * @return
+	    */
 	   public int[][] readppm(String fn)
 		 {		
 	        try {
@@ -129,7 +134,11 @@ public class SeamCarving
 	        }
 	    }
 
-	   
+	   /**
+	    * Affiche les lignes du fichier fn de format ppm
+	    * @param fn
+	    * @return
+	    */
 	   public int[][][] readppmDeux(String fn)
 		 {		
 	        try {
@@ -170,7 +179,12 @@ public class SeamCarving
 	            return null;
 	        }
 	    }
-   
+           
+           /**
+            * Permet l'écriture dans un fichier ppm
+            * @param image
+            * @param filename
+            */
 	   public static void writeppm(int[][] image, String filename)
 	   {
 		   PrintWriter writer = null;
