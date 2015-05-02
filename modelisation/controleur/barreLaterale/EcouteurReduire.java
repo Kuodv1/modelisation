@@ -19,6 +19,10 @@ public class EcouteurReduire implements ActionListener {
 	protected JTextField reducHauteur;
 	protected JComboBox choixMethode;
 	
+	/**
+	 * Construteur EcouterReduire
+	 * @param m
+	 */
 	public EcouteurReduire(Modele m) {
 		this.m = m;
 		this.reducLargeur = new JTextField(5);
@@ -29,6 +33,10 @@ public class EcouteurReduire implements ActionListener {
 	}
 
 	@Override
+	/**
+	 * Fonction est appelé quand une action se produit
+	 * @param arg0
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 		JPanel redim = new JPanel(new GridLayout(3,2));
 		redim.add(new JLabel("Réduire la largeur de combien de pixels ? "));
