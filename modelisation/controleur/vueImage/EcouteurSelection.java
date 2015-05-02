@@ -18,12 +18,20 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 	protected Point p2;
 	protected Modele m;
 	
+	/**
+	 * Constructeur EcouterSelection
+	 * @param m
+	 */
 	public EcouteurSelection(Modele m) {
 		this.m = m;
 		surImage = false;
 	}
 
 	@Override
+	/**
+	 * Vérifie si l'utilisateur à fait un clique droit et la valeur du booleen isClick
+	 * @param evt
+	 */
 	public void mouseClicked(MouseEvent evt) {
 		if(!isClick && evt.getButton()==ButtonRight) {
 			m.supprimerSelection(evt.getX(), evt.getY());
@@ -43,11 +51,19 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 	}
 	
 	@Override
+	/**
+	 * Cette fonction est appellé lorsque la souris est placé sur l'image
+	 * @param arg0
+	 */
 	public void mouseEntered(MouseEvent arg0) {
 		surImage = true;
 	}
 
 	@Override
+	/**
+	 * Cette fonction est appellé lorsque la souris quitte l'image
+	 * @param evt
+	 */
 	public void mouseExited(MouseEvent evt) {
 		int x = evt.getX();
 		if(x<0) x=0;
@@ -61,6 +77,10 @@ public class EcouteurSelection implements MouseListener, MouseMotionListener{
 	}
 
 	@Override
+	/** 
+	 * Vérifie si l'utilisateur à fait un clique gauche
+	 * @param evt
+	 */
 	public void mousePressed(MouseEvent evt) {
 		if(evt.getButton()==ButtonLeft && !isClick) {
 			isClick = true;
