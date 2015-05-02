@@ -7,11 +7,19 @@ import modelisation.modele.Modele;
 
 public class SelectionConserve extends ImageCharge{
 
+	/**
+	 * Constructeur SelectionConserve
+	 * @param width
+	 * @param height
+	 */
 	public SelectionConserve(int width, int height) {
 		super(width, height, TYPE_INT_ARGB);
 	}
 	
-	
+	/**
+	 * Initialise la zone de l'image selectionné à l'aide du modèle m
+	 * @param m
+	 */
 	public void dessiner(Modele m) {
 		int[][] recup = m.getConserverSupprimer();
 		
@@ -28,6 +36,10 @@ public class SelectionConserve extends ImageCharge{
 
 
 	@Override
+	/**
+	 * Retourne l'image
+	 * @return 
+	 */
 	public Image getImage() {
 		return this;
 	}
