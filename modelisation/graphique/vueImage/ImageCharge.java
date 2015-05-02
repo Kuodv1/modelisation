@@ -13,8 +13,8 @@ public abstract class ImageCharge extends BufferedImage {
 	/**
 	 * Constructeur ImageCharge
 	 * @param width
-	 * @ height
-	 * @ imageType
+	 * @param height
+	 * @param imageType
 	 */
 	public ImageCharge(int width, int height, int imageType) {
 		super(width, height, imageType);
