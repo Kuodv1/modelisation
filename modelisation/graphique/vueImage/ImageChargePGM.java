@@ -8,11 +8,19 @@ import modelisation.modele.Modele;
 
 public class ImageChargePGM extends ImageCharge {
 	
+	/**
+	 * Constructeur ImageChargePGM
+	 * @param width
+	 * @param height
+	 */
 	public ImageChargePGM(int width, int height) {
 		super(width,height,BufferedImage.TYPE_BYTE_GRAY);
 	}
 	
-	
+	/**
+	 * Initialise l'image à l'aide du modèle m
+	 * @param m
+	 */
 	public void dessiner(Modele m) {
 		int[][] recup = m.getImage();
 		WritableRaster wr = this.getRaster();
@@ -24,6 +32,10 @@ public class ImageChargePGM extends ImageCharge {
 		this.setData(wr);
 	}
 	
+	/**
+	 * Retourne une Image
+	 *@return
+	 */
 	public Image getImage() {
 		return this;
 	}
