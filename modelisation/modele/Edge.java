@@ -56,6 +56,10 @@ class Edge
 	   this.used = used;
    }
    
+   /**
+    * Permet d'initialiser la variable capacity
+    * @param capacity
+    */
    public void setCapacity(int capacity) {
 	   this.capacity = capacity;
    }
