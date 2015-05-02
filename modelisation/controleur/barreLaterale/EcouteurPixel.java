@@ -13,6 +13,11 @@ public class EcouteurPixel implements ActionListener{
 	//choix = 1 <=> clique sur conserver
 	//choix = 2 <=> clique sur supprimers
 	
+	/**
+	 * Constructeur EcouterPixel
+	 * @param m
+	 * @param choix
+	 */
 	public EcouteurPixel(Modele m, int choix) {
 		this.m = m;
 		this.choix = choix; 
@@ -20,6 +25,10 @@ public class EcouteurPixel implements ActionListener{
 	}
 
 	@Override
+	/**
+	 * Fonction est appelé quand une action se produit 
+	 * @param e
+	 */
 	public void actionPerformed(ActionEvent e) {
 		m.setAction(choix);
 	}
