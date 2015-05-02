@@ -8,11 +8,19 @@ import modelisation.modele.Modele;
 
 public class ImageChargePPM extends ImageCharge{
 
+	/**
+	 * Constructeur ImageChargePPM
+	 * @param width
+	 * @param height
+	 */
 	public ImageChargePPM(int width, int height) {
 		super(width,height,BufferedImage.TYPE_3BYTE_BGR);
 	}
 	
-	
+	/**
+	 * Initialise l'image à l'aide du modèle m
+	 * @param m
+	 */
 	public void dessiner(Modele m) {
 		int[][] recup = new int[m.getImage().length][m.getImage()[0].length];
 		for(int i = 0; i<m.getImage().length;i++) {
@@ -35,6 +43,10 @@ public class ImageChargePPM extends ImageCharge{
 
 
 	@Override
+	/**
+	 * Retourne l'image 
+	 *@return
+	 */
 	public Image getImage() {
 		 return this;
 	}
