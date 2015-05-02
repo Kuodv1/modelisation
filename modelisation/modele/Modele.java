@@ -35,10 +35,18 @@ public class Modele extends Observable {
 		return lienImg;
 	}
 	
+	/**
+	 * Retourne la méthode utilisée
+	 * @return 
+	 */
 	public String getMethode() {
 		return methode;
 	}
 	
+	/**
+	 * Initialise la méthode que l'on veut utiliser
+	 * @param methode
+	 */
 	public void setMethode(String methode) {
 		this.methode = methode;
 	}
@@ -70,6 +78,10 @@ public class Modele extends Observable {
 		 update();
 	}
 	
+	/**
+	 * Affiche les lignes du fichier filePath 
+	 * @param filePath
+	 */
 	public void readPpm(String filePath) {
 		img = sc.readppm(filePath);
 		lienImg = filePath;
@@ -96,6 +108,9 @@ public class Modele extends Observable {
 		getGraphResidu();
 	}
 	
+	/**
+	 * Permet la génération d'un graphe afin de minimiser l'énérgie
+	 */
 	public void generationGraphEnergie() {
 		ArrayList<Integer> suppr = new ArrayList<Integer>();
 		ArrayList<Integer> conserv = new ArrayList<Integer>();
@@ -138,7 +153,13 @@ public class Modele extends Observable {
 		   return imageInt;
 	   }
 
-	   
+	   /**
+	 * Conception du tableau des interéts à partir du tableau image
+	 * @param image
+	 * @param suppr
+	 * @param conserv
+	 * @return
+	 */ 
 	   public int[][][] interestEnergieAvant(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv)
 	   {		   
 		 //initialisation tableau même taille
@@ -203,13 +224,28 @@ public class Modele extends Observable {
 		   return imageInt;
 	   }
 	   
+	   /**
+	    * Fonction qui permet de trier les pixels à supprimer et à conserver
+	    * @param i
+	    * @param j
+	    * @param itr
+	    * @param suppr
+	    * @param conserv
+	    */
 	   public void conservSupprPixel(int i, int j, int[][] itr, ArrayList<Integer> suppr, ArrayList<Integer> conserv) {
 		   if(conservSuppr.getValue(i, j)!=0) {
 			   if(conservSuppr.getValue(i, j)==-1) supprPixel(i,j,itr,suppr);
 			   else conservPixel(i,j,itr,conserv);
 		   }
 	   }
-
+	    /**
+	    * Fonction qui permet de trier les pixels à supprimer et à conserver tout en minimisant l'énergie
+	    * @param i
+	    * @param j
+	    * @param itr
+	    * @param suppr
+	    * @param conserv
+	    */
 	   public void conservSupprPixelEnergie(int i, int j, int[][][] itr, ArrayList<Integer> suppr, ArrayList<Integer> conserv){
 		   if(conservSuppr.getValue(i, j)!=0) {
 			   if(conservSuppr.getValue(i, j)==-1) supprPixelEnergie(i,j,itr,suppr);
@@ -217,11 +253,25 @@ public class Modele extends Observable {
 		   }
 	   }
 	   
+	   /**
+	    * Initialise les valeurs du tableau imageInt et ajoute les pixels à supprimer dans l'arraylist suppr
+	    * @param i
+	    * @param j
+	    * @param imageInt
+	    * @param suppr
+	    */
 	   public void supprPixel(int i, int j, int[][] imageInt, ArrayList<Integer> suppr) {
 		   suppr.add((imageInt.length*j)+i+1);
 		   imageInt[i][j] = 0;
 	   }
 	   
+	   /**
+	    * Initialise les valeurs du tableau imageInt et ajoute les pixels à supprimer dans l'arraylist suppr
+	    * @param i
+	    * @param j
+	    * @param imageInt
+	    * @param suppr
+	    */
 	   public void supprPixelEnergie(int i, int j, int[][][] imageInt, ArrayList<Integer> suppr) {
 		   suppr.add((imageInt[0].length*j)+i+1);
 		   imageInt[0][i][j] = 0;
@@ -229,24 +279,59 @@ public class Modele extends Observable {
 		   imageInt[2][i][j] = 0;
 	   }
 	   
+	   /**
+	    * Remplie l'arraylist conserv des pixels à conserver
+	    * @param i
+	    * @param j
+	    * @param imageInt
+	    * @param conserv
+	    */
 	   public void conservPixel(int i, int j, int[][] imageInt, ArrayList<Integer> conserv) {
 		   conserv.add((imageInt.length*j)+1+i);
 	   }
 	   
+	    /**
+	    * Remplie l'arraylist conserv des pixels à conserver
+	    * @param i
+	    * @param j
+	    * @param imageInt
+	    * @param conserv
+	    */
 	   public void conservPixelEnergie(int i, int j, int[][][] imageInt, ArrayList<Integer> conserv) {
 		   conserv.add((imageInt[0].length*j)+1+i);
 	   }
 	   
+	   /**
+	    * Calcul de l'interêt du pixel en faisant la moyenne des valeurs de ses voisins de gauche et de droit
+	    * @param i
+	    * @param j
+	    * @param image
+	    * @return
+	    */
 	   public int interestDroite(int i, int j, int[][] image) {
 		   //(i,j) -> (i,j+1) |M(i,j+1) - M(i,j-1)|
 		   return Math.abs(image[i][j+1]-image[i][j-1]);
 	   }
 	   
+	    /**
+	    * Calcul de l'interêt du pixel en faisant la moyenne des valeurs de ses voisins du bas et de gauche
+	    * @param i
+	    * @param j
+	    * @param image
+	    * @return 
+	    */
 	   public int interestHaut(int i, int j, int[][] image) {
 		   //(i,j) -> (i-1,j) |M(i-1,j) - M(i,j-1)|
 		   return Math.abs(image[i-1][j] - image[i][j-1]);
 	   }
 	   
+	   /**
+	    * Calcul de l'interêt du pixel en faisant la moyenne des valeurs de ses voisins du haut et de gauche
+	    * @param i
+	    * @param j
+	    * @param image
+	    * @return 
+	    */
 	   public int interestBas(int i, int j, int[][] image) {
 		   //(i,j) -> (i+1,j) |M(i+1,j) - M(i,j-1)|
 		   return Math.abs(image[i+1][j]-image[i][j-1]);
