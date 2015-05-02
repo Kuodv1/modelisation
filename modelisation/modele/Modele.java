@@ -337,6 +337,13 @@ public class Modele extends Observable {
 		   return Math.abs(image[i+1][j]-image[i][j-1]);
 	   }
 	   
+	   /**
+	    * Créer un tableau d'interêt d'une image de format ppm
+	    * @param image
+	    * @param suppr
+	    * @param conserv
+	    * @return 
+	    */
 	   public int[][] interestPPM(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv) {
 		   //initialisation tableau même taille
 		   int i,j;
@@ -372,6 +379,13 @@ public class Modele extends Observable {
 		   return imageInt;
 	   }
 	   
+	   /**
+	    * Créer un tableau d'interêt d'une image de format ppm
+	    * @param image
+	    * @param suppr
+	    * @param conserv
+	    * @return 
+	    */
 	   public int[][][] interestEnergieAvantPPM(int[][] image, ArrayList<Integer> suppr, ArrayList<Integer> conserv)
 	   {		   
 		 //initialisation tableau même taille
@@ -424,6 +438,13 @@ public class Modele extends Observable {
 		   return imageInt;
 	   }
 	   
+	   /**
+	    * Calcul la valeur d'interêt d'un pixel à l'aide de la couleur de son voisin de droite et de gauche
+	    * @param i
+	    * @param j
+	    * @param image
+	    * @return
+	    */
 	   public int interestDroitePPM(int i, int j, int[][] image) {
 		   int rgb[] = getRGB(image[i][j+1]);
 		   int rgb2[] = getRGB(image[i][j-1]);
@@ -432,6 +453,13 @@ public class Modele extends Observable {
 		   return ret;
 	   }
 	   
+	   /**
+	    * Calcul la valeur d'interêt d'un pixel à l'aide de la couleur de son voisin de gauche et du haut
+	    * @param i
+	    * @param j
+	    * @param image
+	    * @return
+	    */
 	   public int interestHautPPM(int i, int j, int[][] image) {
 		   int rgb[] = getRGB(image[i-1][j]);
 		   int rgb2[] = getRGB(image[i][j-1]);
@@ -440,6 +468,13 @@ public class Modele extends Observable {
 		   return ret;
 	   }
 	   
+	   /**
+	    * Calcul la valeur d'interêt d'un pixel à l'aide de la couleur de son voisin de gauche et du bas
+	    * @param i
+	    * @param j
+	    * @param image
+	    * @return
+	    */
 	   public int interestBasPPM(int i, int j, int[][] image) {
 		   int rgb[] = getRGB(image[i+1][j]);
 		   int rgb2[] = getRGB(image[i][j-1]);
@@ -448,6 +483,13 @@ public class Modele extends Observable {
 		   return ret;
 	   }
 	   
+	   /**
+	    * Calcul la valeur d'interêt d'un pixel à l'aide de sa couleur
+	    * @param i
+	    * @param j
+	    * @param image
+	    * @return
+	    */
 	   public int interestRGBCase(int i, int j, int[][]image) {
 		   int ret = 0;
 		   int rgb[] = getRGB(image[i][j]);
@@ -455,6 +497,11 @@ public class Modele extends Observable {
 		   return ret;
 	   }
 	   
+	   /**
+	    *  Retourne un tableau d'entier représentant une valeur de couleur RGB
+	    * @param caseTab
+	    * @return
+	    */
 	   public int[] getRGB(int caseTab) {
 		   int[] rgb = new int[3];
 		   int i = caseTab;
@@ -479,6 +526,11 @@ public class Modele extends Observable {
 		return graph;
 	}
 	
+	/**
+	 * Conception du graphe
+	 * @param itr
+	 * @return
+	 */
 	public Graph toGraph(int[][][] itr) {
 		Graph graph = new Graph(itr[0].length*itr[0][0].length+2);
 		graph.buildGraph(itr);
@@ -502,6 +554,9 @@ public class Modele extends Observable {
 		g.getGraphResidu();
 	}
 	
+	/**
+	 * Fonction qui permet la reduction d'une image
+	 */
 	public void reduction(int reducLarge, int reducHaut) {
 		System.out.println("Debut du traitement de reduction.");
 		if(reducLarge>0)reductionLargeur(reducLarge);
@@ -512,7 +567,7 @@ public class Modele extends Observable {
 	}
 	
 	/**
-	 * Elaboration de la r�duction de l'image et �criture de la nouvelle image
+	 * Elaboration de la r�duction de l'image et �criture de la nouvelle image  en largeur 
 	 * @param reduc
 	 */
 	public void reductionLargeur(int reduc) {
@@ -534,13 +589,19 @@ public class Modele extends Observable {
 		}
 	}
 	
-	
+	/**
+	 * Elaboration de la r�duction de l'image et �criture de la nouvelle image  en hauteur
+	 * @param reduc
+	 */
 	public void reductionHauteur(int reduc) {
 		rotationGauche();
 		reductionLargeur(reduc);
 		rotationDroite();
 	}
 	
+	/**
+	 * Permet de faire une rotation gauche à l'aide d'un tableau intermediaire
+	 */
 	public void rotationGauche() {
 		if(img!=null) {
 			int[][] newImage = new int[img[0].length][img.length];
@@ -554,6 +615,9 @@ public class Modele extends Observable {
 		}
 	}
 	
+	/**
+	 * Permet de faire une rotation droite à l'aide d'un tableau intermediaire
+	 */
 	public void rotationDroite() {
 		if(img!=null) {
 			int[][] newImage = new int[img[0].length][img.length];
@@ -615,19 +679,35 @@ public class Modele extends Observable {
 		}
 	}
 	
+	/**
+	 * Retourne le tableau img
+	 * @return
+	 */
 	public int[][] getImage() {
 		return img;
 	}
 	
+	/**
+	 * Retourne les pixels selectionnés par l'utilisateur du tableau conservSuppr
+	 * @return
+	 */
 	public int[][] getConserverSupprimer() {
 		return conservSuppr.getSelect();
 	}
 	
+	/**
+	 * Initialise l'action que l'on souhaite
+	 * @param choix
+	 */
 	public void setAction(int choix) {
 		this.choix = choix;
 	}
 
-	
+	/**
+	 * Permet de selectionner la zone de clique de l'utilisateur
+	 * @param p1
+	 * @param p2
+	 */
 	public void select(Point p1, Point p2){
 		if(choix!=0) {
 			Point pUn;
@@ -668,6 +748,11 @@ public class Modele extends Observable {
 		}
 	}
 	
+	/**
+	 * Supprime la selection de l'utilisateur
+	 * @param x
+	 * @param y
+	 */
 	public void supprimerSelection(int x, int y) {
 		if(conservSuppr.getValue(y, x)!=0) {
 			conservSuppr = new Selection(conservSuppr);
@@ -676,21 +761,33 @@ public class Modele extends Observable {
 		}
 	}
 	
+	/**
+	 * Fonction qui annule la selection de l'utilisateur
+	 */
 	public void annulerSelection() {
 		conservSuppr = conservSuppr.getPere();
 		update();
 	}
 	
+	/**
+	 * Retourne un booleen si l'utilisateur à annulé sa selection
+	 * @return
+	 */
 	public boolean annulerSelectPossible() {
 		return conservSuppr.annulerSelectPossible();
 	}
 
-	
+	/**
+	 * Retourne la hauteur du tableau img
+	 */
 	public int getHauteur() {
 		if(img!=null) return img.length;
 		else return 0;
 	}
 	
+	/**
+	 * Retourne la largeur du tableau img
+	 */
 	public int getLargeur() {
 		if(img!=null) return img[0].length;
 		else return 0;
