@@ -126,6 +126,10 @@ public class Graph
 		}
    }
    
+   /**
+    * Construit le graphe du tableau itr
+    * @param itr
+    */
    public void buildGraph(int[][][] itr) {
 		buildGraph(itr[0]);
 		//edge from, to , capacity, used
@@ -165,7 +169,10 @@ public class Graph
 	   return i;
    }
    
-   
+   /**
+    * Modifie la capacité d'une arête si celle-ci se trouve dans l'arraylist des arêtes à supprimer
+    * @param suppr
+    */
    public void modifInteretSuppr(ArrayList<Integer> suppr) {
 	   for(int i = 0; i<suppr.size();i++) {
 		   for(Edge e : adj[suppr.get(i)]) {
@@ -176,6 +183,10 @@ public class Graph
 	   }
    }
    
+   /**
+    * Modifie la capacité d'une arête à -1 si celle-ci se trouve dans l'arraylist des arêtes à conserver
+    * @param conserv
+    */
    public void modifInteretConserv(ArrayList<Integer> conserv) {
 	   for(int i = 0; i<conserv.size();i++) {
 		   for(Edge e : adj[conserv.get(i)]) {
