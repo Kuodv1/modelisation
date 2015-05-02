@@ -10,6 +10,12 @@ public abstract class ImageCharge extends BufferedImage {
 	protected int width;
 	protected int height;
 	
+	/**
+	 * Constructeur ImageCharge
+	 * @param width
+	 * @ height
+	 * @ imageType
+	 */
 	public ImageCharge(int width, int height, int imageType) {
 		super(width, height, imageType);
 		this.width = width;
@@ -17,10 +23,18 @@ public abstract class ImageCharge extends BufferedImage {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Retourne la variable height
+	 * @return
+	 */
 	public int getHauteur() {
 		return height;
 	}
 	
+	/**
+	 * Retourne la variable weight
+	 * @return
+	 */
 	public int getLargeur() {
 		return width;
 	}
