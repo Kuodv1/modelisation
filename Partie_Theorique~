@@ -11,7 +11,7 @@ Donc un seul sommet de S suivi immédiatement par un sommet de T.
 
 
 2.
-Si nous prenons le cas où les sommets de S et T n'appartiennent pas au 3 cas proposés, cela voudrait dire qu'il existera toujours un chemin de S à T avec les arêtes transversales entre 
+Si nous prenons le cas où les sommets de S et T n'appartiennent pas au 3 cas proposés l'on , cela voudrait dire qu'il existera toujours un chemin de S à T avec les arêtes transversales entre 
 -(i, j) et (i+1, j-1),
 -(i+1, j+1) et (i, j) 
 et ainsi la coupe obtenu ne sera pas une coupe minimale
