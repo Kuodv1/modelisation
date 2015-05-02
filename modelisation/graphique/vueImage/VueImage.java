@@ -21,6 +21,10 @@ public class VueImage extends JPanel implements Observer {
 	protected ImageCharge affi;
 	protected ImageCharge selection;
 	
+	/**
+	 * Constructeur VueImage 
+	 * @param m
+	 */
 	    public VueImage(Modele m) {
 	    	super(new BorderLayout());
 	    	setPreferredSize(new Dimension(200,200));
@@ -32,7 +36,11 @@ public class VueImage extends JPanel implements Observer {
 	    	this.addMouseListener(listener);
 	    	this.addMouseMotionListener(listener);
 	    }
-
+	
+	/**
+	 * Fonction qui permet de redéfinir la façon dont l'objet est dessiné sur la fenêtre
+	 * @param g
+	 */
 	    public void paintComponent(Graphics g){
 	        super.paintComponent(g);
 	        Graphics2D g2 = (Graphics2D) g;
@@ -49,6 +57,9 @@ public class VueImage extends JPanel implements Observer {
 	      }            
 	    
 		@Override
+		/**
+		 * Fonction qui sera exécutée quand le modèle indique qu'il a changé et notifie ses observateurs
+		 */
 		public void update(Observable o, Object arg) {
 			if(m.getImage()!=null) {
 				int[][] img = m.getImage();
