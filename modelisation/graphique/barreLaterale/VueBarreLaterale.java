@@ -24,6 +24,10 @@ public class VueBarreLaterale extends JPanel implements Observer{
 	protected JButton annuler;
 	protected GridLayout grid;
 	
+	/**
+	 * Constructeur VueBarreLaterale
+	 * @param m
+	 */
 	public VueBarreLaterale(Modele m) {
 		super(new BorderLayout());
 		this.m = m;
@@ -61,6 +65,11 @@ public class VueBarreLaterale extends JPanel implements Observer{
 	}
 
 	@Override
+	/**
+	 * Fonction qui sera exécutée quand le modèle indique qu'il a changé et notifie ses observateurs
+	 * @param argv0
+	 * @param arg1
+	 */
 	public void update(Observable arg0, Object arg1) {
 		if(!m.getLink().isEmpty()) {
 			reduce.setEnabled(true);
