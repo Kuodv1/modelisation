@@ -58,7 +58,7 @@ public class Modele extends Observable {
 	public void writeImage(int[][] image) {
 		System.out.println("Ecriture de la nouvelle image...");
 		StringBuilder newName = new StringBuilder(lienImg.substring(0,lienImg.lastIndexOf(File.separator)+1));
-		newName.append("resize_");
+		newName.append("resize_"+methode+"_");
 		newName.append(lienImg.subSequence(lienImg.lastIndexOf(File.separator)+1, lienImg.length()));
 		if(lienImg.endsWith(".pgm")) sc.writepgm(image,  newName.toString());
 		else if (lienImg.endsWith(".ppm")) sc.writeppm(image, newName.toString());
