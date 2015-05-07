@@ -675,6 +675,10 @@ public class Modele extends Observable {
 			}
 			for(Edge e : g.getLine(i+1)) {
 				e.setUsed(min);
+				/*if(g.existEdge(e.to, e.from)!=-1) {
+					Edge a = g.getEdge(e.to, e.from);
+					System.out.println("e : "+e.from+"->"+e.to + "  ||| ret : "+a.from+"->"+a.to);
+				}*/
 			}
 		}
 	}

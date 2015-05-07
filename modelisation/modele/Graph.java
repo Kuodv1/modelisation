@@ -316,15 +316,46 @@ public class Graph
     * @param chemin
     */
    public void toFlotMax(ArrayList<Edge> chemin) {
-	   int min = Integer.MAX_VALUE;
+	/*   int min = Integer.MAX_VALUE;
 	   for(Edge e : chemin) {
 		   if(e.capacity!=-1 && min>(e.capacity-e.used)) {
 			  min = e.capacity-e.used;
 		   }
 	   }
+	  */
 	   
+	   int min = Integer.MAX_VALUE;
+	   int temp = Integer.MAX_VALUE;
 	   for(Edge e : chemin) {
+		   if(e.capacity!=-1) {
+			   temp = 0;
+			   if(existEdge(e.to, e.from)!=-1) {
+					Edge a = getEdge(e.to, e.from);
+					//System.out.println("e : "+e.from+"->"+e.to + "  ||| ret : "+a.from+"->"+a.to);
+					if(a.capacity!=-1) temp+= a.used;
+				}
+			   temp+= (e.capacity-e.used);
+		   }
+		   if(temp < min) min = temp;
+	   }
+	   //System.out.println(min);
+	   /*for(Edge e : chemin) {
 		   e.addUsed(min);
+	   }*/
+	   for(Edge e : chemin) {
+		   if(min>(e.capacity-e.used) && !e.infini()) {
+			   int tempD = e.capacity-e.used;
+			   e.addUsed(tempD);
+			 //  tempD = tempD-min;
+			   Edge a = getEdge(e.to,e.from);
+			   if(a.infini()) a.addUsed(min-tempD);
+			   else a.addUsed(tempD-min);
+			   //a.addUsed(tempD);
+			   if(a.used<0 || (a.capacity<a.used)) System.out.println(a.used +"/"+a.capacity);
+			   //getEdge(e.to,e.from).addUsed(tempD);
+			   //System.out.println("neg ? : "+tempD);
+		   } else e.addUsed(min);
+		   if((e.used<0 || (e.capacity<e.used)) && !e.infini()) System.out.println(e.used+"/"+e.capacity);
 	   }
    }
    
@@ -352,7 +383,7 @@ public class Graph
 		   }
 		   test.remove(0);
 		}
-	   
+
 	   ArrayList<Integer> coupe = new ArrayList<Integer>();
 	   for(int i = 1; i<=getNbLine();i++) {
 		   int j = i;
@@ -361,6 +392,8 @@ public class Graph
 		   }
 		   coupe.add(j-getNbLine());
 	   }
+	   
+	   
 	   return coupe;
    }
 
