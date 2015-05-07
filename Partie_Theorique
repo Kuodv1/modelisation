@@ -15,3 +15,19 @@ Si nous prenons le cas où les sommets de S et T n'appartiennent pas au 3 cas pr
 -(i, j) et (i+1, j-1),
 -(i+1, j+1) et (i, j) 
 et ainsi la coupe obtenu ne sera pas une coupe minimale
+
+
+
+3.
+Traitement en hauteur de l'image.
+Il suffit de faire une rotation de 90° à l'image vers la gauche, appliquer le traitement en largeur, puis faire une rotation de 90° à l'image vers la droite.
+
+4. 
+Conservation d'un pixel.
+Pour le conserver, il suffit de donner un intérêt d'une valeur infini (ici, Integer.MAX_VALUE) afin qu'il n'y ai jamais de saturation.
+
+5. 
+Supprimer un pixel.
+Pour supprimer absolument un pixel, il suffit de donner un intérêt nul aux pixels que l'on souhaite supprimer, et incrémenter de 1 tous les autres pixels non concerné par ce changement.
+
+Pour réaliser les deux étapes là, lorsque nous calculons l'intérêt pour chaque pixel, nous donnons une valeur de 1 à l'intérêt de base, et suivant sa condition (si on doit le conserver, supprimer, ou ne rien faire, respectivement on rend l'intérêt en MAX_VALUE/0/ 1+intérêt de base).
