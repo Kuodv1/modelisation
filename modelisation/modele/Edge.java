@@ -7,6 +7,9 @@ class Edge
    int capacity;
    int used;
    
+   //Apparation du marquage, permettant de retrouver des arêtes infinis utilisés à contre sens
+   int marquage;
+   
    /**
     * Constructeur de Edge
     * @param x
@@ -20,6 +23,7 @@ class Edge
 		this.to = y;
 		this.capacity = capacity;
 		this.used = used;
+		marquage = 0;
 	 }
   
    /**

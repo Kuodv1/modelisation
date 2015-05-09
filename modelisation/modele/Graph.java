@@ -263,8 +263,22 @@ public class Graph
 			   flotMax = true;
 		   } else {
 			   toFlotMax(check);
+			   remetZeroMarquage();
 		   }
 	   }   
+   }
+   
+   /**
+    * Demarquage des arêtes infinis
+    */
+   public void remetZeroMarquage() {
+	   for(int i = 0; i<adj.length;i++) {
+		   for(Edge e : adj[i]) {
+			   if(e.infini()) {
+				   e.marquage=0;
+			   }
+		   }
+	   }
    }
    
    
@@ -286,13 +300,20 @@ public class Graph
 	   
 	   while(!test.isEmpty() && !trouve) {
 		   Edge check = test.get(0);
+		   int sommet = 0;
 		   if(check.getTo()==adj.length-1) { result.add(check); trouve = true;} 
 		   else {
-			   for(Edge e : adj[check.to]) {
-				   if(!e.max() && !visit.containsKey(e.to) && check.to==e.from) {
+			   //Si l'arête est marqué, alors elle est infini, et permet d'atteindre un sommet inexploré. Pour avoir les bonnes arêtes de ce sommet, on vérifie par le marquage la destination souhaité
+			   if(check.marquage==1) sommet = check.from;
+			   else sommet = check.to;
+			   for(Edge e : adj[sommet]) {
+				   if(!e.max() && !visit.containsKey(e.to) && sommet==e.from) { //traitement des arêtes directs
 					   test.add(e);
 					   visit.put(e.to, e);
-					  // if(e.to == 5) {System.out.println(e.from+ " - "+e.used+" - "+e.capacity);}
+				   } else if(e.infini() && e.used>0 && !visit.containsKey(e.from)){ //traitement des arêtes infinis avec une utilisation >0 et qui permette l'accès à un sommet inexploré
+					   test.add(e);
+					   visit.put(e.from, e);
+					   e.marquage = 1; //marqué l'arête pour se souvenir qu'on la parcours à contre sens
 				   }
 			   }
 			   test.remove(0);
@@ -303,8 +324,13 @@ public class Graph
 	   
 	   if(trouve) {
 		   Edge retrace = result.get(0);
+		   int sommet = 0;
 		   while(retrace.from!=0) {
-			   retrace = visit.get(retrace.from);
+			   if(retrace.marquage==1) { //le marquage permet de faire l'inversion si nécessaire
+				   sommet = retrace.to;
+			   }
+			   else sommet = retrace.from;
+			   retrace = visit.get(sommet);
 			   result.add(retrace);
 		   }
 	   }
@@ -316,46 +342,34 @@ public class Graph
     * @param chemin
     */
    public void toFlotMax(ArrayList<Edge> chemin) {
-	/*   int min = Integer.MAX_VALUE;
-	   for(Edge e : chemin) {
-		   if(e.capacity!=-1 && min>(e.capacity-e.used)) {
-			  min = e.capacity-e.used;
-		   }
-	   }
-	  */
 	   
 	   int min = Integer.MAX_VALUE;
 	   int temp = Integer.MAX_VALUE;
 	   for(Edge e : chemin) {
 		   if(e.capacity!=-1) {
 			   temp = 0;
-			   if(existEdge(e.to, e.from)!=-1) {
-					Edge a = getEdge(e.to, e.from);
-					//System.out.println("e : "+e.from+"->"+e.to + "  ||| ret : "+a.from+"->"+a.to);
-					if(a.capacity!=-1) temp+= a.used;
+			   if(existEdge(e.to, e.from)!=-1) { //si !=1, alors il existe une arête retour
+					Edge a = getEdge(e.to, e.from); // la prendre
+					temp+= a.used; // ajouter son utilisation à ce que l'on peut envoyer
 				}
 			   temp+= (e.capacity-e.used);
-		   }
+		   } else if(e.marquage==1) temp = e.used; //utilisation d'une arête infini mais dans le sens retour
 		   if(temp < min) min = temp;
+		   temp = Integer.MAX_VALUE;
 	   }
-	   //System.out.println(min);
-	   /*for(Edge e : chemin) {
-		   e.addUsed(min);
-	   }*/
+	   
 	   for(Edge e : chemin) {
 		   if(min>(e.capacity-e.used) && !e.infini()) {
 			   int tempD = e.capacity-e.used;
 			   e.addUsed(tempD);
-			 //  tempD = tempD-min;
-			   Edge a = getEdge(e.to,e.from);
-			   if(a.infini()) a.addUsed(min-tempD);
-			   else a.addUsed(tempD-min);
-			   //a.addUsed(tempD);
-			   if(a.used<0 || (a.capacity<a.used)) System.out.println(a.used +"/"+a.capacity);
-			   //getEdge(e.to,e.from).addUsed(tempD);
-			   //System.out.println("neg ? : "+tempD);
-		   } else e.addUsed(min);
-		   if((e.used<0 || (e.capacity<e.used)) && !e.infini()) System.out.println(e.used+"/"+e.capacity);
+			   Edge a = getEdge(e.to,e.from); // l'arête retour infini ou non
+			   a.addUsed(tempD-min); // on lui retire le surplus qu'on a
+			  // if(a.used<0 || (a.capacity<a.used)) System.out.println(a.used +"/"+a.capacity); // test d'erreur
+		   } else if(e.marquage==1) {//cas arête infini dans le sens retour
+			   e.addUsed(-min);
+		   }
+		   else e.addUsed(min); //cas arête infini dans le bon sens ou arête avec capacité suffisante
+		   //if((e.used<0 || (e.capacity<e.used)) && !e.infini()) System.out.println(e.used+"/"+e.capacity); //autre test d'erreur
 	   }
    }
    
